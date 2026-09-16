@@ -91,10 +91,10 @@
 .btn { flex: 1; text-align: center; border-radius: 10px; padding: 10px 14px; font-size: 12.5px; font-weight: 700; cursor: pointer;
   background: var(--nh-surface); border: 1px solid var(--nh-line); color: var(--nh-ink-2); font-family: inherit; line-height: normal; }
 .btn:hover { background: #f4f3f0; }
-.btn[data-kind="primary"] { background: var(--nh-ink); color: #fff; border-color: var(--nh-ink); }
-.btn[data-kind="primary"]:hover { background: #2e2e28; }
+.btn[data-kind="primary"] { background: var(--nh-brand); color: #fff; border-color: var(--nh-brand); }
+.btn[data-kind="primary"]:hover { background: var(--nh-brand-hover); }
 .btn[data-kind="accent"] { background: var(--nh-brand); color: #fff; font-weight: 800; border-color: var(--nh-brand); }
-.btn[data-kind="accent"]:hover { background: var(--nh-brand-2); }
+.btn[data-kind="accent"]:hover { background: var(--nh-brand-hover); }
 .btn[data-kind="disabled"] { background: #f0efea; color: var(--nh-on-dark-mute); cursor: default; border-color: #f0efea; }
 .btn[data-kind="muted"] { background: #f0efea; color: var(--nh-ink-2); border-color: #f0efea; }
 .btn[data-fixed="true"] { flex: 0 0 auto; }

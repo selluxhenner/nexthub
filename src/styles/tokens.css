@@ -15,9 +15,13 @@
   --nh-on-dark: #fbfbf9;
   --nh-on-dark-mute: #a0a099;
   --nh-accent: #ff5a1f;      /* time: due now, overdue, worsening */
-  --nh-brand: #1286fd;       /* the logo blue: actions and selection — send, approve, the picked row */
-  --nh-brand-2: #0b74e0;     /* hover */
-  --nh-brand-tint: #e6f1ff;
+  /* Decision Blue: the product's interactive brand colour. */
+  --nh-brand: #0b70d1;
+  --nh-brand-hover: #085dae;
+  --nh-brand-active: #064b8c;
+  --nh-brand-tint: #eaf3ff;
+  --nh-brand-line: #b8d9ff;
+  --nh-brand-2: var(--nh-brand-hover); /* compatibility alias for existing components */
   --nh-ok: #2f8f5b;
 
   --nh-font: var(--font-sans, "Manrope"), system-ui, -apple-system, "Segoe UI", sans-serif;   /* --font-sans set by next/font in layout.tsx */

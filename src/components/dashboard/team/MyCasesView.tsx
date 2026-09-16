@@ -2,6 +2,7 @@
 // TEAM MEMBER home: what happened to what I sent, plus one field to raise something - the
 // routing table proposes owner, deputy and buddy; it never decides. Port of the MY IDEAS
 // block in legacy/demo/index.html.
+import Link from "next/link";
 import { useState } from "react";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import { mineRows } from "@/components/dashboard/derive";
@@ -13,8 +14,10 @@ import styles from "./MyCasesView.module.css";
 
 export function MyCasesView() {
   const ctx = useDemo();
-  const { seed, S, D, demo, persona, act, openSheet, showToast, deptName, ready, f } = ctx;
+  const { seed, S, D, demo, persona, act, openSheet, showToast, deptName, ready, f, href } = ctx;
   const [draft, setDraft] = useState("");
+  // Selection: one case at a time; clicking it again closes it. Local, like the inbox - nothing is stored.
+  const [sel, setSel] = useState<string | null>(null);
   if (!ready) return <div className={ui.loading} />;
 
   const who = persona.who, P = seed.promiseDays, O = seed.outcomeDays;
@@ -54,8 +57,13 @@ export function MyCasesView() {
               <div className={ui.emptySub}>Describe what you need in the box on the right. It names the person who owns it and the date they owe you an answer — and it stays here until they do.</div>
             </div>
           )}
-          {mine.map((m) => (
-            <div key={m.kind + m.id} className={styles.caseItem}>
+          {mine.map((m) => {
+            const key = m.kind + m.id, picked = sel === key;
+            const toggle = () => setSel(picked ? null : key);
+            return (
+            <div key={key} className={styles.caseItem} data-selected={picked ? "true" : undefined} data-overdue={m.overdue ? "true" : undefined}
+              role="button" tabIndex={0} aria-expanded={picked} onClick={toggle}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } }}>
               <div className={ui.between}>
                 <div className={styles.caseHead}>
                   <div className={styles.caseTitle}>{m.title}</div>
@@ -80,9 +88,14 @@ export function MyCasesView() {
                 <div className={styles.replyText}>{m.reply}</div>
                 <div className={styles.replyBy}>{m.replyBy}</div>
               </div>
-              {m.canReply && (
-                <div className={`${ui.btnRow} ${ui.mt}`}>
-                  <Btn kind="accent" onClick={() => openSheet("reply", m.id)}>Answer {m.replyTo}</Btn>
+              {(picked || m.canReply) && (
+                <div className={`${ui.btnRow} ${ui.mt} ${styles.actions}`} onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+                  {m.canReply && <Btn kind="accent" onClick={() => openSheet("reply", m.id)}>Answer {m.replyTo}</Btn>}
+                  {picked && (
+                    <Link href={m.kind === "case" ? href("/cases/" + m.id) : href("/ideas?id=" + m.id)} className={styles.open}>
+                      {m.kind === "case" ? "Open the full case" : "Open the idea"} →
+                    </Link>
+                  )}
                 </div>
               )}
 
@@ -92,7 +105,8 @@ export function MyCasesView() {
                 <span className={ui.small}>{m.outcomeNote}</span>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className={`${ui.sticky} ${ui.stack}`}>

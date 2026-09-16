@@ -35,12 +35,12 @@ button, input, textarea, select { font: inherit; color: inherit; }
   transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
 }
 .nh-btn:active { transform: translateY(1px); }
-.nh-btn-primary { background: var(--nh-ink); color: var(--nh-on-dark); }
-.nh-btn-primary:hover { background: #2e2e28; color: #fff; }
+.nh-btn-primary { background: var(--nh-brand); color: #fff; }
+.nh-btn-primary:hover { background: var(--nh-brand-hover); color: #fff; }
 .nh-btn-ghost { background: transparent; color: var(--nh-ink); border-color: var(--nh-line); }
 .nh-btn-ghost:hover { background: var(--nh-card); color: var(--nh-ink); }
-.nh-btn-accent { background: var(--nh-accent); color: #fff; }
-.nh-btn-accent:hover { background: #e84f17; color: #fff; }
+.nh-btn-accent { background: var(--nh-brand); color: #fff; }
+.nh-btn-accent:hover { background: var(--nh-brand-hover); color: #fff; }
 .nh-btn-block { width: 100%; }
 .nh-btn-sm { height: 34px; padding: 0 14px; font-size: 13px; }
 
@@ -54,7 +54,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
   outline: none; transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .nh-input::placeholder { color: var(--nh-mute-2); }
-.nh-input:focus { border-color: var(--nh-ink); box-shadow: 0 0 0 3px rgba(20, 20, 20, 0.08); }
+.nh-input:focus { border-color: var(--nh-brand); box-shadow: 0 0 0 3px rgb(11 112 209 / 0.16); }
 .nh-textarea { height: auto; min-height: 120px; padding: 12px 14px; resize: vertical; line-height: 1.5; }
 .nh-select { appearance: none; padding-right: 36px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235b5b5b' stroke-width='1.6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
 .nh-input-wrap { position: relative; }
@@ -62,7 +62,7 @@ button, input, textarea, select { font: inherit; color: inherit; }
 .nh-input-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--nh-mute); display: flex; }
 
 .nh-check { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--nh-ink-2); }
-.nh-check input { width: 16px; height: 16px; accent-color: var(--nh-ink); margin: 0; }
+.nh-check input { width: 16px; height: 16px; accent-color: var(--nh-brand); margin: 0; }
 
 .nh-divider { display: flex; align-items: center; gap: 12px; color: var(--nh-mute-2); font-size: 12px; }
 .nh-divider::before, .nh-divider::after { content: ""; flex: 1; height: 1px; background: var(--nh-line); }
