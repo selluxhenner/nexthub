@@ -20,9 +20,9 @@
 .navItem, .scopeItem { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-radius: 9px; cursor: pointer; text-align: left; background: transparent; border: 0; font-family: inherit; width: 100%; }
 .navItem { padding: 9px 10px; font-size: 13.5px; font-weight: 600; color: var(--nh-mute-2); }
 .navItem:hover, .scopeItem:hover { color: var(--nh-on-dark); }
-.navItem[data-active="true"] { background: #2e2e28; color: var(--nh-on-dark); font-weight: 700; }
+.navItem[data-active="true"] { background: #2e2e28; color: var(--nh-on-dark); font-weight: 700; box-shadow: inset 3px 0 0 var(--nh-brand); }
 .scopeItem { padding: 7px 10px; border-radius: 8px; font-size: 12.5px; font-weight: 500; color: #93928a; }
-.scopeItem[data-active="true"] { background: #2e2e28; color: var(--nh-on-dark); font-weight: 700; }
+.scopeItem[data-active="true"] { background: #2e2e28; color: var(--nh-on-dark); font-weight: 700; box-shadow: inset 3px 0 0 var(--nh-brand); }
 .navCount { font-family: var(--nh-mono); font-size: 10px; color: var(--nh-mute-2); }
 .navItem[data-active="true"] .navCount, .scopeItem[data-active="true"] .navCount { color: #e4e3db; }
 

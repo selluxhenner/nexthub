@@ -3,12 +3,12 @@
 .title { font-size: 23px; font-weight: 800; color: var(--nh-ink); letter-spacing: -0.028em; line-height: 1.15; }
 .sub { font-size: 13px; color: var(--nh-mute); margin-top: 5px; line-height: 1.45; max-width: 640px; }
 .tools { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-.scopeChip { display: flex; align-items: center; gap: 7px; background: var(--nh-dark); color: #fff; border-radius: 8px; padding: 7px 11px; font-size: 12px; font-weight: 700; cursor: pointer; border: 0; font-family: inherit; }
+.scopeChip { display: flex; align-items: center; gap: 7px; background: var(--nh-brand); color: #fff; border-radius: 8px; padding: 7px 11px; font-size: 12px; font-weight: 700; cursor: pointer; border: 0; font-family: inherit; }
 .scopeX { color: var(--nh-on-dark-mute); }
 .rel { position: relative; }
 
 .toolBtn { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; user-select: none; white-space: nowrap; background: var(--nh-card); color: #3d3d3a; border: 1px solid var(--nh-line); position: relative; z-index: 31; font-family: inherit; }
-.toolBtn[data-on="true"] { background: var(--nh-ink); color: #fff; border-color: var(--nh-ink); }
+.toolBtn[data-on="true"] { background: var(--nh-brand); color: #fff; border-color: var(--nh-brand); }
 .toolHint { color: inherit; opacity: 0.6; font-weight: 600; }
 .badge { font-family: var(--nh-mono); font-size: 10px; font-weight: 700; line-height: 1; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--nh-accent); color: #1a1a17; display: inline-flex; align-items: center; justify-content: center; }
 
@@ -25,7 +25,7 @@
 .fchips { display: flex; flex-wrap: wrap; gap: 6px; }
 .fchip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; color: #3d3d3a; background: var(--nh-card); border: 1px solid var(--nh-line); cursor: pointer; user-select: none; white-space: nowrap; transition: background 100ms ease, border-color 100ms ease; font-family: inherit; }
 .fchip:hover { border-color: #c9c8c0; background: var(--nh-surface); }
-.fchip[data-on="true"] { background: var(--nh-ink); border-color: var(--nh-ink); color: #fff; }
+.fchip[data-on="true"] { background: var(--nh-brand); border-color: var(--nh-brand); color: #fff; }
 .fchip[data-empty="true"] { opacity: 0.45; }
 .fcount { font-family: var(--nh-mono); font-size: 10px; color: var(--nh-on-dark-mute); background: #f4f3f0; border-radius: 5px; padding: 1px 5px; }
 .fchip[data-on="true"] .fcount { color: #e4e3db; background: #2e2e28; }
@@ -35,7 +35,7 @@
 
 .strip { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 8px 12px; border-radius: 10px; background: var(--nh-card); border: 1px dashed #d9d8d2; }
 .stripLabel { font-family: var(--nh-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--nh-ink-2); white-space: nowrap; }
-.stripChip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 9px; border-radius: 7px; background: var(--nh-ink); color: #fff; font-size: 11.5px; font-weight: 700; cursor: pointer; white-space: nowrap; border: 0; font-family: inherit; }
+.stripChip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px 4px 9px; border-radius: 7px; background: var(--nh-brand); color: #fff; font-size: 11.5px; font-weight: 700; cursor: pointer; white-space: nowrap; border: 0; font-family: inherit; }
 .stripX { color: var(--nh-on-dark-mute); font-size: 13px; line-height: 1; }
 .stripChip:hover .stripX { color: #fff; }
 .stripClear { margin-left: auto; }
