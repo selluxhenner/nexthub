@@ -55,7 +55,7 @@ export type DemoContext = {
   menu: boolean; setMenu: (b: boolean) => void;
   dev: boolean; setDev: (b: boolean) => void;
   act: Act;
-  resetDemo: () => void; copySnippet: () => void; logout: () => void;
+  resetDemo: () => void; deleteAdded: () => void; copySnippet: () => void; logout: () => void;
   f: DayFmt; // demo day offset -> "today" / "12 Sep"
   href: (path: string) => string; // "/ideas?id=i1" -> "/acme/ideas?id=i1"
 };
@@ -208,6 +208,16 @@ export function DemoProvider({ tenant, seed, children }: Props) {
     showToast("Demo state reset");
   }, [slug, showToast]);
 
+  // Dev panel: drop the cases raised in this browser (and everything done to them); seed cases and
+  // what was done to them stay. A log purge, not an event - it only exists for the demo.
+  const deleteAdded = useCallback(() => {
+    const ids = new Set(S.cases.filter((c) => !c.seed).map((c) => c.id));
+    if (!ids.size) { showToast("Nothing to delete — every case here is seed data."); return; }
+    updateLog(slug, (prev) => ({ ...prev, events: prev.events.filter((e) => !(e.target && ids.has(e.target))) }));
+    setSheet(null);
+    showToast("Deleted " + ids.size + (ids.size === 1 ? " case" : " cases") + " you added. Seed data untouched.");
+  }, [S, slug, showToast]);
+
   // Log out: forget the persona in this browser and go back to the company login. Demo log stays.
   const logout = useCallback(() => {
     clearPrefs(slug);
@@ -233,7 +243,7 @@ export function DemoProvider({ tenant, seed, children }: Props) {
     q, setQ, pop, setPop, togglePop: (p) => setPop((cur) => (cur === p ? null : p)),
     sheet, openSheet: (kind, id, init) => { setSheet({ kind, id, text: "", picked: null, people: [], ...init }); setPop(null); },
     closeSheet: () => setSheet(null), patchSheet: (p) => setSheet((s) => (s ? { ...s, ...p } : s)),
-    toast, showToast, menu, setMenu, dev, setDev, act, resetDemo, copySnippet, logout,
+    toast, showToast, menu, setMenu, dev, setDev, act, resetDemo, deleteAdded, copySnippet, logout,
     f: dayFormatter(today, S.day), href,
   };
 

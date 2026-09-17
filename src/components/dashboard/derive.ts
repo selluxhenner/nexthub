@@ -4,8 +4,10 @@ import { cosignRow, mineRow, type MineRow } from "@/features/cases/rows";
 import { onDesk } from "@/features/cases/selectors";
 import type { DemoContext } from "./DemoProvider";
 
-// Live cases on this person's desk (open), and the desk including those paused on a question.
-export const openCases = (ctx: DemoContext) => ctx.D.cases.filter((c) => onDesk(c, ctx.persona.who.name) && c.open);
+// Live cases on someone's desk (open) - the number the rail shows as "Inbox" and the dev panel
+// shows next to each leader; the desk including those paused on a question.
+export const openCasesOf = (ctx: DemoContext, name: string) => ctx.D.cases.filter((c) => onDesk(c, name) && c.open);
+export const openCases = (ctx: DemoContext) => openCasesOf(ctx, ctx.persona.who.name);
 export const deskCases = (ctx: DemoContext) => ctx.D.cases.filter((c) => onDesk(c, ctx.persona.who.name) && (c.open || c.status === "asked"));
 
 // Inbox order: live cases first (oldest clock on top), then the ones paused on a question.

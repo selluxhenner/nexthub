@@ -1,5 +1,6 @@
 // STEP 2 of login: company-branded login. Visual only: the form is a GET to /[company] (the role router).
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { AuthShell, AuthTitle, AuthFoot, AuthStats } from "@/components/auth/AuthShell";
 import { Field } from "@/components/ui/Field";
 import { Divider } from "@/components/ui/Divider";
@@ -15,7 +16,8 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function CompanyLoginPage({ params }: Props) {
   const { company } = await params;
-  const tenant = (await findTenant(company))!; // layout already 404s on unknown slugs
+  const tenant = await findTenant(company);
+  if (!tenant) notFound(); // the layout 404s too, but layouts and pages render in parallel
   const short = tenant.name.split(" ")[0];
   const demoUser = tenant.users.find((u) => u.role === "leader") ?? tenant.users[0];
 
