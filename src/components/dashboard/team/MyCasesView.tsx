@@ -25,13 +25,16 @@ export function MyCasesView() {
   const proposal = propose(draft, seed.routes);
   const pr = proposal?.route ?? null;
   const canSend = draft.trim().length >= 8;
+  // A case always lands with your own team lead first (org chart: who you report to); the map's
+  // owner is the proposal they pass it on to. Forwarded, never dropped on a stranger's desk.
+  const lead = seed.people.find((p) => p.name === who.name)?.reportsTo ?? seed.personas.find((r) => r.id === "leader")?.who.name ?? "Triage desk";
+  const passesOn = !!pr && pr.owner.name !== lead;
   const send = () => {
     if (!canSend) return;
-    const owner = pr ? pr.owner.name : "Triage desk";
     const due = f(S.day + P);
-    act.raise({ title: draft.trim(), body: "", routeId: pr ? pr.id : null, assignee: owner, fromDept: who.line, reason: pr ? "triage" : "not responsible" });
+    act.raise({ title: draft.trim(), body: "", routeId: pr ? pr.id : null, assignee: lead, fromDept: who.line, reason: pr ? "triage" : "not responsible" });
     setDraft("");
-    showToast("Sent to " + owner + ". Answer owed by " + due + ".");
+    showToast("Sent to " + lead + ". Answer owed by " + due + "." + (passesOn ? " They pass it to " + pr.owner.name + " if it is theirs." : ""));
   };
 
   const promises = [
@@ -134,14 +137,15 @@ export function MyCasesView() {
                   </span>
                 </div>
                 <div className={styles.matched}>Matched row: <span className={styles.matchedRow}>{pr.type}</span> · deputy {pr.deputy} · your buddy there: {pr.buddy}</div>
+                {passesOn && <div className={styles.matched}>Goes to <span className={styles.matchedRow}>{lead}</span> first — your team lead passes it to {pr.owner.name} if it is theirs.</div>}
                 <button type="button" className={styles.wrong} onClick={() => showToast("Noted — a human routes it instead, and the override is logged against the map.")}>Not the right owner?</button>
               </div>
             )}
-            {proposal && !pr && <div className={styles.noMatch}>No row in the map matches yet — a human routes it within a day and the gap is added to the map.</div>}
+            {proposal && !pr && <div className={styles.noMatch}>No row in the map matches yet — {lead} routes it within a day and the gap is added to the map.</div>}
 
             <div className={`${ui.btnRow} ${ui.mt}`}>
               <button type="button" className={styles.send} data-ready={canSend ? "true" : undefined} onClick={send} disabled={!canSend}>
-                {pr ? "Send to " + pr.owner.name : "Send — a human will route it"}
+                {"Send to " + lead}
               </button>
             </div>
 

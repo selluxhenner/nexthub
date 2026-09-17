@@ -22,6 +22,8 @@
 .track[data-on="true"] { background: var(--nh-accent); justify-content: flex-end; }
 .knob { width: 13px; height: 13px; border-radius: 50%; background: var(--nh-on-dark); display: block; }
 .copyIcon { font-family: var(--nh-mono); font-size: 10px; color: var(--nh-mute-2); }
+.rowBtn:disabled { cursor: default; opacity: 0.55; }
+.trash { font-size: 12px; color: var(--nh-mute-2); }
 .foot { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 12px; padding: 9px 2px 0; border-top: 1px solid var(--nh-dark-line); }
 .reset { font-size: 11px; font-weight: 600; color: var(--nh-mute-2); cursor: pointer; border: 0; border-bottom: 1px solid #3d3d38; white-space: nowrap; background: none; padding: 0; font-family: inherit; }
 .keys { font-family: var(--nh-mono); font-size: 9px; color: var(--nh-ink-2); white-space: nowrap; }

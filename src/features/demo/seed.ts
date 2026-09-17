@@ -195,27 +195,32 @@ export const ROLES: RolePersona[] = [
     who: { name: 'B. Hartmann', ini: 'BH', line: 'Head of Production · 190 people', handle: null } }
 ];
 
+// The three team leads. Every routing row is owned by one of them with another as deputy,
+// so a case can be followed from desk to desk (dev panel → "inbox of") and never leaves view.
+export const LEADERS: string[] = ['T. Vogel', 'M. Roth', 'H. Sander'];
+
 // The routing table (PRODUCT_CONCEPT_ORG_OS.md §19): recurring request type →
 // owning role · deputy · buddy in the neighbouring department. Filled in once
 // by a department head. The intake box matches typed text against `keys` and
-// *proposes* the row — it never decides (§11.2).
+// *proposes* the row — it never decides (§11.2). Owner and deputy are always
+// two of LEADERS; the buddy is the sideways contact and may be anyone.
 export const ROUTES: Route[] = [
   { id: 'r1', type: 'Spend under €5k (parts, tools, consumables)', keys: ['spend', 'buy', 'order', 'purchase', 'sensor', 'part', 'budget', '€', 'invoice', 'supplier'],
-    owner: { name: 'R. Nowak', role: 'Cost-centre lead', dept: 'FIN' }, deputy: 'C. Ilg', buddy: 'C. Ilg · Ops & Admin', wait: '3 d' },
+    owner: { name: 'T. Vogel', role: 'Team lead, Production', dept: 'PRD' }, deputy: 'M. Roth', buddy: 'C. Ilg · Ops & Admin', wait: '3 d' },
   { id: 'r2', type: 'Test-rig or machine time', keys: ['rig', 'test', 'machine', 'booking', 'slot', 'validation', 'endurance'],
     owner: { name: 'M. Roth', role: 'Engineering lead', dept: 'ENG' }, deputy: 'H. Sander', buddy: 'M. Roth · Engineering', wait: '4 d' },
   { id: 'r3', type: 'Quality data, measurements, tolerances', keys: ['quality', 'tolerance', 'measurement', 'mes', 'rework', 'scrap', 'drift', 'defect'],
     owner: { name: 'H. Sander', role: 'Quality lead', dept: 'QUA' }, deputy: 'T. Vogel', buddy: 'H. Sander · Quality', wait: '2 d' },
   { id: 'r4', type: 'System access, logins, IT equipment', keys: ['access', 'login', 'laptop', 'account', 'password', 'it ', 'software', 'system', 'vpn'],
-    owner: { name: 'L. Brandt', role: 'IT service lead', dept: 'HIT' }, deputy: 'B. Ehlers', buddy: 'L. Brandt · HR / IT', wait: '4 d' },
+    owner: { name: 'M. Roth', role: 'Engineering lead', dept: 'ENG' }, deputy: 'H. Sander', buddy: 'L. Brandt · HR / IT', wait: '4 d' },
   { id: 'r5', type: 'Product change reaching the field', keys: ['customer', 'firmware', 'change note', 'release', 'field', 'shipped', 'sales'],
-    owner: { name: 'N. Kaya', role: 'Sales lead', dept: 'SAL' }, deputy: 'A. Weber', buddy: 'N. Kaya · Sales', wait: '2 d' },
+    owner: { name: 'H. Sander', role: 'Quality lead', dept: 'QUA' }, deputy: 'M. Roth', buddy: 'N. Kaya · Sales', wait: '2 d' },
   { id: 'r6', type: 'Shift plan, staffing, overtime', keys: ['shift', 'overtime', 'staff', 'holiday', 'roster', 'capacity', 'hours', 'people'],
-    owner: { name: 'T. Vogel', role: 'Team lead, Production', dept: 'PRD' }, deputy: 'S. Dahl', buddy: 'D. Ferraro · Field Service', wait: '1 d' },
+    owner: { name: 'T. Vogel', role: 'Team lead, Production', dept: 'PRD' }, deputy: 'H. Sander', buddy: 'D. Ferraro · Field Service', wait: '1 d' },
   { id: 'r7', type: 'Fixture, tooling or line layout', keys: ['fixture', 'tooling', 'layout', 'line', 'housing', 'jig', 'setup', 'changeover'],
-    owner: { name: 'T. Vogel', role: 'Team lead, Production', dept: 'PRD' }, deputy: 'J. Klein', buddy: 'M. Roth · Engineering', wait: '2 d' },
+    owner: { name: 'T. Vogel', role: 'Team lead, Production', dept: 'PRD' }, deputy: 'M. Roth', buddy: 'M. Roth · Engineering', wait: '2 d' },
   { id: 'r8', type: 'Paperwork done twice (forms, job sheets)', keys: ['paper', 'form', 'twice', 'double', 'sheet', 'excel', 'report', 'manual'],
-    owner: { name: 'C. Ilg', role: 'Ops & Admin lead', dept: 'OPS' }, deputy: 'L. Brandt', buddy: 'D. Ferraro · Field Service', wait: '3 d' }
+    owner: { name: 'H. Sander', role: 'Quality lead', dept: 'QUA' }, deputy: 'T. Vogel', buddy: 'D. Ferraro · Field Service', wait: '3 d' }
 ];
 
 // Cases. One entity, three views: the employee sees the ones they raised
@@ -337,6 +342,6 @@ export const VIEWS: Record<string, ViewCopy> = {
 export const SEED: Seed = {
   promiseDays: PROMISE_DAYS, outcomeDays: OUTCOME_DAYS,
   depts: DEPTS, people: PEOPLE, problems: PROBLEMS, ideas: IDEAS, initiatives: INITIATIVES, outcomes: OUTCOMES,
-  personas: ROLES, routes: ROUTES, cases: CASES, waitingOn: WAITING_ON, buddies: BUDDIES,
+  personas: ROLES, leaders: LEADERS, routes: ROUTES, cases: CASES, waitingOn: WAITING_ON, buddies: BUDDIES,
   stall: STALL, ledger: LEDGER, metrics: METRICS, views: VIEWS
 };

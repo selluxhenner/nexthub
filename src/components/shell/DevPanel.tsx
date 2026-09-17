@@ -3,7 +3,7 @@
 // demo clock, demo data on/off, export session cases, reset. Development only - it never ships
 // to a pilot; sessions replace it in Phase 2.
 import { useDemo } from "@/components/dashboard/DemoProvider";
-import { deskFor, deskHolders } from "@/features/cases/selectors";
+import { openCasesOf } from "@/components/dashboard/derive";
 import styles from "./DevPanel.module.css";
 
 export function DevPanel() {
@@ -31,8 +31,8 @@ export function DevPanel() {
             <>
               <div className={styles.subLabel}>Inbox of</div>
               <div className={styles.personas}>
-                {deskHolders(S, seed.routes).map((n) => {
-                  const on = persona.who.name === n, count = deskFor(S, n).length;
+                {seed.leaders.map((n) => {
+                  const on = persona.who.name === n, count = openCasesOf(ctx, n).length;
                   return (
                     <button key={n} type="button" className={styles.persona} data-on={on ? "true" : undefined} onClick={() => ctx.setLeadAs(n)}>
                       {n}{count ? <span className={styles.personaCount}>{count}</span> : null}
@@ -56,6 +56,11 @@ export function DevPanel() {
           <button type="button" className={styles.rowBtn} onClick={ctx.copySnippet}>
             <span className={styles.rowText}><span className={styles.rowTitle}>Copy for seed.ts</span><span className={styles.rowNote}>{newCount ? newCount + (newCount === 1 ? " new case this session" : " new cases this session") : "nothing new this session"} · pastes into CASES</span></span>
             <span className={styles.copyIcon}>⧉</span>
+          </button>
+
+          <button type="button" className={styles.rowBtn} onClick={ctx.deleteAdded} disabled={!newCount}>
+            <span className={styles.rowText}><span className={styles.rowTitle}>Delete what you added</span><span className={styles.rowNote}>{newCount ? "removes the " + newCount + (newCount === 1 ? " case" : " cases") + " raised in this browser · seed stays" : "nothing added yet · seed stays"}</span></span>
+            <span className={styles.trash}>✕</span>
           </button>
 
           <div className={styles.foot}>

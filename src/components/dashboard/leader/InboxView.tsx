@@ -209,7 +209,7 @@ export function InboxView({ initialId }: { initialId?: string }) {
                         <Btn onClick={() => openSheet("no", sc.id)}>No, and why</Btn>
                       </div>
                       <div className={ui.btnRow}>
-                        <Btn kind="accent" onClick={() => openSheet("hand", sc.id, { picked: handTo })}>{scMine ? "Hand to " + handTo : "Pass to " + handTo}</Btn>
+                        <Btn kind="accent" onClick={() => openSheet("hand", sc.id, { picked: handTo })}>{"Pass to " + handTo}</Btn>
                         <Btn onClick={() => openSheet("ask", sc.id)}>Ask one question</Btn>
                       </div>
                       <div className={styles.actionNote}>Whatever you pick, the person who raised it is told today. A question pauses the clock; a hand-over keeps it running.</div>

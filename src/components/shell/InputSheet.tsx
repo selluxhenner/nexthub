@@ -64,15 +64,15 @@ export function InputSheet() {
     if (route) {
       if (route.owner.name !== who.name) add(route.owner.name, "the map’s owner · " + route.owner.role + ", " + deptName(route.owner.dept));
       add(route.deputy, route.owner.name === who.name ? "your deputy for this row" : "deputy on this row");
-      add(route.buddy.split(" · ")[0], "buddy for this row · " + (route.buddy.split(" · ")[1] ?? ""));
     }
-    seed.buddies.forEach((b) => add(b.name, "your buddy in " + b.dept + " · " + b.note));
-    const ok = !!sheet.picked;
+    seed.leaders.forEach((n) => { const r = seed.routes.find((x) => x.owner.name === n); add(n, r ? r.owner.role + " · " + deptName(r.owner.dept) : "team lead"); });
+    // A pass needs a reason: the person receiving it and the one who raised it both read it.
+    const picked = !!sheet.picked, why = text.length >= 8, ok = picked && why;
     m = {
-      eyebrow: "Hand over", title: c.title, sub: "Sideways, not up. Whoever you pick gets it in their inbox with the clock still running; " + c.from + " is told who has it now.",
-      options: cands, textLabel: "Why them (optional)", placeholder: "e.g. Quality owns the gauge — we only see the symptom",
-      ok, primaryLabel: ok ? "Hand to " + sheet.picked : "Pick a person", primaryKind: "accent",
-      onConfirm: () => { if (!ok || !sheet.picked) return; act.hand(c.id, sheet.picked, text); done("Handed to " + sheet.picked + ". Both of you and " + c.from + " have been told. The clock keeps running."); },
+      eyebrow: "Pass on", title: c.title, sub: "Sideways, not up. Whoever you pick gets it in their inbox with the clock still running; " + c.from + " is told who has it now and why.",
+      options: cands, textLabel: "Why them", placeholder: "e.g. Quality owns the gauge — we only see the symptom",
+      ok, primaryLabel: !picked ? "Pick a person" : !why ? "Say why them" : "Pass to " + sheet.picked, primaryKind: "accent",
+      onConfirm: () => { if (!ok || !sheet.picked) return; act.hand(c.id, sheet.picked, text); done("Passed to " + sheet.picked + ". Both of you and " + c.from + " have been told. The clock keeps running."); },
     };
   } else if (sheet.kind === "assign" && i) {
     const funded = i.status === "Unfunded";

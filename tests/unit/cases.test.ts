@@ -99,28 +99,28 @@ describe("reduce", () => {
     const c = find(reduce(SEED, log).cases, "c_x");
     expect(c.age).toBe(PROMISE_DAYS + 1);
     expect(c.overdue).toBe(true);
-    expect(c.escalated?.to, "r6 owner is T. Vogel, so escalation goes to the deputy").toBe("S. Dahl");
+    expect(c.escalated?.to, "r6 owner is T. Vogel, so escalation goes to the deputy").toBe("H. Sander");
   });
 
   it("escalation: an overdue case lands on the deputy's desk too; seed overdue is not live", () => {
     const S0 = reduce(SEED, logOf());
-    const c1 = find(S0.cases, "c1"); // raised -7, r7 owner T. Vogel → deputy J. Klein
-    expect(c1.escalated?.to).toBe("J. Klein");
+    const c1 = find(S0.cases, "c1"); // raised -7, r7 owner T. Vogel → deputy M. Roth
+    expect(c1.escalated?.to).toBe("M. Roth");
     expect(c1.escalated?.live, "already overdue at day 0 — not counted as a demo escalation").toBe(false);
     expect(S0.ledger.escalated).toBe(0);
-    expect(inboxFor(S0, "J. Klein").some((c) => c.id === "c1"), "deputy sees it").toBe(true);
+    expect(inboxFor(S0, "M. Roth").some((c) => c.id === "c1"), "deputy sees it").toBe(true);
     expect(inboxFor(S0, "T. Vogel").some((c) => c.id === "c1"), "original owner keeps it").toBe(true);
     // a case raised today, six days later
-    const S6 = reduce(SEED, { events: [ev("case.raised", "Anonymous #4471", "c_x", { title: "x", routeId: "r1", assignee: "T. Vogel" }, 0)], day: PROMISE_DAYS + 1 });
+    const S6 = reduce(SEED, { events: [ev("case.raised", "Anonymous #4471", "c_x", { title: "x", routeId: "r3", assignee: "T. Vogel" }, 0)], day: PROMISE_DAYS + 1 });
     const cx = find(S6.cases, "c_x");
-    expect(cx.escalated?.to, "sat with T. Vogel but r1 is owned by R. Nowak → goes to the owner").toBe("R. Nowak");
+    expect(cx.escalated?.to, "sat with T. Vogel but r3 is owned by H. Sander → goes to the owner").toBe("H. Sander");
     expect(cx.escalated?.live).toBe(true);
     expect(cx.escalated?.day).toBe(PROMISE_DAYS + 1);
     expect(S6.ledger.escalated, "the new case + five seed cases (raised 1-4 d ago) all crossed the line during the session; c1 was already over").toBe(6);
-    expect(deskHolders(S6, ROUTES)).toContain("R. Nowak");
-    // the deputy can close it
-    const S7 = reduce(SEED, { events: cx.history.concat([ev("case.decided", "R. Nowak", "c_x", { answer: "yes" }, PROMISE_DAYS + 1)]), day: PROMISE_DAYS + 1 });
-    expect(find(S7.cases, "c_x").decided?.by).toBe("R. Nowak");
+    expect(deskHolders(S6, ROUTES)).toContain("H. Sander");
+    // the owner can close it
+    const S7 = reduce(SEED, { events: cx.history.concat([ev("case.decided", "H. Sander", "c_x", { answer: "yes" }, PROMISE_DAYS + 1)]), day: PROMISE_DAYS + 1 });
+    expect(find(S7.cases, "c_x").decided?.by).toBe("H. Sander");
     expect(inboxFor(S7, "T. Vogel").some((c) => c.id === "c_x")).toBe(false);
   });
 
