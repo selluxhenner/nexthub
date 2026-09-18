@@ -20,7 +20,7 @@ type ProjectSort = "wait" | "status" | "title" | "people";
 type PersonSort = "name" | "dept" | "role";
 type PeopleScope = "linked" | "all";
 
-const INK = "#141414", ACCENT = "#ff5a1f", MUTE = "#b9b9b4";
+const INK = "#141414", BRAND = "#0b70d1", ACCENT = "#ff5a1f", MUTE = "#b9b9b4";
 const edgeLook = (status: InitiativeStatus) =>
   status === "Shipped" ? { stroke: INK, dash: "0" } : status === "Awaiting decision" ? { stroke: ACCENT, dash: "0" } : status === "Proposed" ? { stroke: MUTE, dash: "7 7" } : { stroke: "#8c8c88", dash: "0" };
 const STATUS_ORDER: InitiativeStatus[] = ["Awaiting decision", "In trial", "Building", "Proposed", "Shipped"];
@@ -373,7 +373,7 @@ export function CollaborationView({ initialId }: { initialId?: string }) {
                     return (
                       <g key={n.person.name} className={styles.node} opacity={dim ? 0.38 : 1} onClick={() => pickPerson(n.person.name)}>
                         {tag && <circle cx={p.x} cy={p.y} r={21} fill="none" stroke={ACCENT} strokeWidth={2.2} />}
-                        <circle cx={p.x} cy={p.y} r={15} fill={lit ? INK : "#fff"} stroke={me ? ACCENT : INK} strokeWidth={me ? 2.2 : 1.2} />
+                        <circle cx={p.x} cy={p.y} r={15} fill={lit ? INK : "#fff"} stroke={me ? BRAND : INK} strokeWidth={me ? 2.2 : 1.2} />
                         <text x={p.x} y={p.y} dy={4} textAnchor="middle" className={styles.nodeIni} fill={lit ? "#fff" : INK}>{ini(n.person.name)}</text>
                         <text x={p.x} y={p.y + 27} textAnchor="middle" className={styles.nodeTitle}>{n.person.name}</text>
                         <text x={p.x} y={p.y + 38} textAnchor="middle" className={styles.nodeMeta}>{n.person.role}</text>

@@ -6,7 +6,7 @@
 
 .options { display: flex; flex-direction: column; gap: 7px; margin-top: 16px; }
 .option { display: block; text-align: left; border-radius: 10px; padding: 10px 12px; cursor: pointer; border: 1px solid var(--nh-line); background: var(--nh-surface); font-family: inherit; }
-.option[data-on="true"] { border-color: var(--nh-ink); background: #1a1a17; }
+.option[data-on="true"] { border-color: var(--nh-brand); background: var(--nh-brand); }
 .optionLabel { font-size: 12.5px; font-weight: 700; color: var(--nh-ink); line-height: 1.35; }
 .optionSub { font-size: 11px; color: var(--nh-mute); margin-top: 3px; line-height: 1.4; }
 .option[data-on="true"] .optionLabel { color: #fff; }
@@ -14,13 +14,13 @@
 
 .people { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 16px; }
 .person { display: inline-flex; align-items: center; gap: 7px; border-radius: 999px; padding: 6px 11px 6px 6px; cursor: pointer; font-size: 12px; font-weight: 700; border: 1px solid var(--nh-line); background: var(--nh-surface); color: var(--nh-ink); font-family: inherit; }
-.person[data-on="true"] { border-color: var(--nh-ink); background: #1a1a17; color: #fff; }
+.person[data-on="true"] { border-color: var(--nh-brand); background: var(--nh-brand); color: #fff; }
 .personIni { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--nh-mono); font-size: 9px; background: var(--nh-ink); color: #fff; }
 .person[data-on="true"] .personIni { background: #fff; color: var(--nh-ink); }
 
 .textLabel { font-size: 11.5px; font-weight: 700; color: var(--nh-ink-2); margin-top: 16px; }
 .textarea { display: block; width: 100%; margin-top: 7px; background: var(--nh-surface); border: 1px solid var(--nh-line); border-radius: 10px; padding: 10px 12px; font-family: inherit; font-size: 12.5px; line-height: 1.5; color: var(--nh-ink); resize: vertical; outline: 0; }
-.textarea:focus { border-color: var(--nh-ink); }
+.textarea:focus { border-color: var(--nh-brand); box-shadow: 0 0 0 3px rgb(11 112 209 / 0.16); }
 .actions { display: flex; gap: 8px; margin-top: 16px; }
 
 @media (max-width: 760px) {
