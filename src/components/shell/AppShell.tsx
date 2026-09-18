@@ -1,5 +1,5 @@
 "use client";
-// The authenticated app chrome: rail (nav by role, department scope) + top bar + content, plus
+// The authenticated app chrome: rail (nav by role) + top bar + content, plus
 // the overlays every page shares: input sheet, toast, dev panel. Port of the shell in
 // legacy/demo/index.html; state comes from DemoProvider, nav from src/config/nav.ts.
 import Image from "next/image";
@@ -9,7 +9,6 @@ import { navFor } from "@/config/nav";
 import { SITE } from "@/config/site";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import { mineRows, openCases } from "@/components/dashboard/derive";
-import { fmt } from "@/lib/utils/format";
 import { DevPanel } from "./DevPanel";
 import { InputSheet } from "./InputSheet";
 import { TopBar } from "./TopBar";
@@ -17,7 +16,7 @@ import styles from "./AppShell.module.css";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const ctx = useDemo();
-  const { tenant, seed, role, persona, N, dept, menu, setMenu, pop, setPop, sheet, toast } = ctx;
+  const { tenant, role, persona, N, menu, setMenu, pop, setPop, sheet, toast } = ctx;
   const pathname = usePathname();
 
   // Rail counts, everything counted from the rows.
@@ -29,7 +28,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     "/ideas": cnt(N.ideas),
     "/collaboration": cnt(N.initiatives),
   };
-  const scopeItems = [{ id: "All", name: "All departments", people: N.people }, ...seed.depts];
 
   return (
     <div className={styles.root}>
@@ -56,21 +54,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
-
-        <div className={styles.rule} />
-
-        <div className={styles.railLabelRow}>
-          <span className={styles.railLabel}>Scope</span>
-          {dept !== "All" && <button type="button" className={styles.clearScope} onClick={() => ctx.setDept("All")}>clear</button>}
-        </div>
-        <div className={`${styles.nav} ${styles.scope}`}>
-          {scopeItems.map((d) => (
-            <button key={d.id} type="button" className={styles.scopeItem} data-active={dept === d.id ? "true" : undefined} onClick={() => ctx.setDept(d.id)}>
-              <span>{d.name}</span>
-              <span className={styles.navCount}>{fmt(d.people)}</span>
-            </button>
-          ))}
-        </div>
 
         <div className={styles.user}>
           <span className={styles.userAvatar}>{persona.who.ini}</span>
