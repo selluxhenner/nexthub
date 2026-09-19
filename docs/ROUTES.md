@@ -13,6 +13,7 @@
 | `/[company]` | `[company]/(app)/page.tsx` | yes | any | Redirect to `ROLE_HOME[role]` |
 | `/[company]/manager` | `.../(app)/manager/page.tsx` | yes | manager | Overview |
 | `/[company]/leader` | `.../(app)/leader/page.tsx` | yes | leader, manager | Inbox |
+| `/[company]/raise` | `.../(app)/raise/page.tsx` | yes | any | Raise a problem or an idea (member home) |
 | `/[company]/team` | `.../(app)/team/page.tsx` | yes | any | My cases |
 | `/[company]/problems` | `.../(app)/problems/page.tsx` | yes | any | Problems |
 | `/[company]/ideas` | `.../(app)/ideas/page.tsx` | yes | any | Ideas |

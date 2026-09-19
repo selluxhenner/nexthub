@@ -1,7 +1,7 @@
 // Shapes of the demo seed (port of legacy/demo/js/data.js). One company's rows; every count on
 // the page is derived from these. When Prisma lands these become the seed script's input.
 import type { Role } from "@/config/roles";
-import type { SeedEvent } from "@/features/cases/events";
+import type { CaseKind, SeedEvent } from "@/features/cases/events";
 
 export type Dept = { id: string; name: string; people: number };
 
@@ -49,7 +49,7 @@ export type Route = { id: string; type: string; keys: string[]; owner: RouteOwne
 
 // A case as seeded. raisedDay is relative to demo day 0 (today); status, clock and assignee are derived by the reducer.
 export type SeedCase = {
-  id: string; title: string; from: string; fromDept: string; routeId: string | null; assignee: string;
+  id: string; kind?: CaseKind; title: string; from: string; fromDept: string; routeId: string | null; assignee: string;
   raisedDay: number; reason: string; upside: string; linkedIdea?: string; body: string; seedEvents?: SeedEvent[];
 };
 
