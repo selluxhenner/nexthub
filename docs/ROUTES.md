@@ -15,7 +15,7 @@
 | `/[company]/leader` | `.../(app)/leader/page.tsx` | yes | leader, manager | Inbox |
 | `/[company]/raise` | `.../(app)/raise/page.tsx` | yes | any | Raise a problem or an idea (member home) |
 | `/[company]/dashboard` | `.../(app)/dashboard/page.tsx` | yes | any | Every problem and idea: open since, on whose desk, stage, score |
-| `/[company]/team` | `.../(app)/team/page.tsx` | yes | any | My cases |
+| `/[company]/team` | `.../(app)/team/page.tsx` | yes | any | What happened to what I sent (one card per case) |
 | `/[company]/problems` | `.../(app)/problems/page.tsx` | yes | any | Problems |
 | `/[company]/ideas` | `.../(app)/ideas/page.tsx` | yes | any | Ideas |
 | `/[company]/collaboration` | `.../(app)/collaboration/page.tsx` | yes | any | Initiatives |

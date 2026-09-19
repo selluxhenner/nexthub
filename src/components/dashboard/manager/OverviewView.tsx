@@ -41,8 +41,8 @@ export function OverviewView() {
   return (
     <>
       <ViewHead view="overview" />
-      <div className={ui.stack14}>
-        <div className={ui.cardDark}>
+      <div className={`${ui.stack14} ${styles.page}`}>
+        <div className={`${ui.cardDark} ${styles.panel}`}>
           <div className={ui.head}>
             <span className={ui.h}>Waiting on you</span>
             <Link href={href("/ideas")} className={ui.textlink}>All ideas →</Link>
@@ -108,7 +108,7 @@ export function OverviewView() {
             </div>
           </div>
 
-          <div className={ui.cardDark}>
+          <div className={`${ui.cardDark} ${styles.panel}`}>
             <div className={ui.h}>The wait ledger</div>
             <div className={`${ui.grid2} ${ui.mt14}`}>
               <div className={styles.ledgerTile}>

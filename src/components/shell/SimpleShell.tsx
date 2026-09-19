@@ -24,6 +24,15 @@ export function SimpleShell({ children }: { children: React.ReactNode }) {
   const shipped = mine.filter((m) => m.status === "Shipped").length;
   // Badges: what is waiting on this person right now.
   const counts = { inbox: openCases(ctx).length, decisions: decisionsWaiting(D).length };
+  // Profile numbers per role: what this person sent (member), what sits on their desk and what they
+  // decided (leader), what waits on them (manager). A manager raises nothing, so "0 raised" is noise.
+  const decided = D.cases.filter((c) => c.decided?.by === who.name).length;
+  const stats: [number, string][] = role === "manager"
+    ? [[counts.decisions, counts.decisions === 1 ? "decision waiting" : "decisions waiting"]]
+    : role === "leader"
+      ? [[counts.inbox, "in inbox"], [decided, "decided"]]
+      : [[mine.length, "raised"], [shipped, "shipped"]];
+  const sent = role !== "manager"; // members and leaders raise things; the footer link follows them
 
   return (
     <div className={styles.root}>
@@ -65,16 +74,18 @@ export function SimpleShell({ children }: { children: React.ReactNode }) {
               </div>
               <div className={styles.meStats}>
                 <span><strong>{persona.role.label}</strong></span>
-                <span><strong>{mine.length}</strong> raised</span>
-                <span><strong>{shipped}</strong> shipped</span>
+                {stats.map(([n, label]) => <span key={label}><strong>{n}</strong> {label}</span>)}
               </div>
-              <div className={styles.mePreview}>
-                <span className={styles.mePreviewLabel}>How others see you</span>
-                <span className={styles.mePreviewName}>{actor}</span>
-                <span className={styles.meLine}>{anon ? "Anonymous · name and role hidden" : who.line}</span>
-              </div>
-              <div className={styles.meFoot}>
-                <Link href={"/" + tenant.slug + "/team"} className={styles.meLink} onClick={() => setPop(null)}>What happened to what I sent →</Link>
+              {/* Only worth showing when it differs from the header: the employee posts under a handle. */}
+              {anon && (
+                <div className={styles.mePreview}>
+                  <span className={styles.mePreviewLabel}>How others see you</span>
+                  <span className={styles.mePreviewName}>{actor}</span>
+                  <span className={styles.meLine}>Anonymous · name and role hidden</span>
+                </div>
+              )}
+              <div className={styles.meFoot} data-single={sent ? undefined : "true"}>
+                {sent && <Link href={"/" + tenant.slug + "/team"} className={styles.meLink} onClick={() => setPop(null)}>What happened to what I sent →</Link>}
                 <button type="button" className={styles.logout} onClick={logout}>Log out</button>
               </div>
             </div>

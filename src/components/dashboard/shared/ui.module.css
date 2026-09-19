@@ -72,7 +72,7 @@
 .bars { display: flex; align-items: flex-end; gap: 3px; height: 22px; }
 .bars[data-size="lg"] { height: 30px; gap: 4px; }
 .bars[data-size="md"] { height: 26px; }
-.bar { flex: 1; min-width: 4px; border-radius: 2px; background: var(--nh-ink); }
+.bar { flex: 1; min-width: 4px; border-radius: 2px; background: var(--nh-fill, var(--nh-ink)); }  /* --nh-fill lets a view recolour its bars */
 .bar[data-tone="before"] { background: #dedcd5; }
 .bar[data-tone="flat"] { background: var(--nh-line); }
 .bar[data-tone="light"] { background: #c9c8c1; }
@@ -112,7 +112,7 @@
 
 .textlink { font-size: 12.5px; font-weight: 600; color: var(--nh-mute); cursor: pointer; background: none; border: 0; padding: 0; font-family: inherit; white-space: nowrap; }
 .textlink:hover { color: var(--nh-ink); }
-.cardDark .textlink { color: #c9c8c0; }
+.cardDark .textlink { color: var(--nh-dark-link, #c9c8c0); }
 .cardDark .textlink:hover { color: #fff; }
 
 .empty { padding: 26px 4px; }
@@ -129,7 +129,7 @@
 .personRow[data-click="true"]:hover { background: var(--nh-surface); }
 
 .progress { height: 10px; border-radius: 999px; background: #f0efea; margin-top: 6px; overflow: hidden; }
-.progressFill { height: 100%; border-radius: 999px; background: var(--nh-ink); }
+.progressFill { height: 100%; border-radius: 999px; background: var(--nh-fill, var(--nh-ink)); }
 .progressFill[data-tone="accent"] { background: var(--nh-accent); }
 
 /* a row of numbers: one card, hairlines between — not one card per number */

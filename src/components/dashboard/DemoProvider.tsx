@@ -17,6 +17,7 @@ import { affectedOn, exportSnippet } from "@/features/cases/selectors";
 import type { Persona, RolePersona, Seed } from "@/features/demo/types";
 import { counts, demoData, type Counts, type DemoData } from "@/features/metrics";
 import { clearPrefs, getServerSnapshot, getSnapshot, resetLog, setPrefs, subscribe, updateLog } from "@/lib/demo-log";
+import { clearShots, dropShots } from "@/lib/shots";
 import { deptName as deptNameOf } from "@/lib/utils/format";
 
 export type Pop = "search" | "decisions" | "me" | "sort" | "filter";
@@ -218,6 +219,7 @@ export function DemoProvider({ tenant, seed, children }: Props) {
 
   const resetDemo = useCallback(() => {
     resetLog(slug);
+    clearShots(slug);
     setPrefs(slug, { leadAs: null });
     setQ(""); setPop(null); setSheet(null);
     showToast("Demo state reset");
@@ -229,6 +231,7 @@ export function DemoProvider({ tenant, seed, children }: Props) {
     const ids = new Set(S.cases.filter((c) => !c.seed).map((c) => c.id));
     if (!ids.size) { showToast("Nothing to delete — every case here is seed data."); return; }
     updateLog(slug, (prev) => ({ ...prev, events: prev.events.filter((e) => !(e.target && ids.has(e.target))) }));
+    dropShots(slug, ids);
     setSheet(null);
     showToast("Deleted " + ids.size + (ids.size === 1 ? " case" : " cases") + " you added. Seed data untouched.");
   }, [S, slug, showToast]);
