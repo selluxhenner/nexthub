@@ -1,4 +1,4 @@
-.shell { min-height: 100dvh; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; background: var(--nh-surface); }
+.shell { min-height: 100dvh; display: grid; grid-template-columns: minmax(300px, 5fr) 7fr; background: var(--nh-app-ground); }
 
 .side { background: var(--nh-dark); color: var(--nh-on-dark); padding: 28px 36px; display: flex; flex-direction: column; gap: 32px; }
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 17px; letter-spacing: -0.02em; color: var(--nh-on-dark); }
@@ -15,8 +15,15 @@
 .stats span { font-size: 20px; font-weight: 600; color: var(--nh-on-dark); min-width: 64px; }
 .stats small { font-size: 13px; color: var(--nh-on-dark-mute); }
 
+.roles { list-style: none; margin: 0; padding: 0; display: grid; }
+.roles li { display: grid; grid-template-columns: 96px 1fr; gap: 2px 12px; padding: 10px 0; border-top: 1px solid var(--nh-dark-line); align-items: baseline; }
+.roles li:last-child { border-bottom: 1px solid var(--nh-dark-line); }
+.roles li :global(.nh-eyebrow) { color: var(--nh-on-dark-mute); }
+.roles strong { font-size: 14px; color: var(--nh-on-dark); }
+.roles small { grid-column: 2; font-size: 12.5px; color: var(--nh-on-dark-mute); line-height: 1.4; }
+
 .main { display: grid; place-items: center; padding: 40px var(--nh-page-x); }
-.card { width: 100%; max-width: 420px; background: var(--nh-card); border: 1px solid var(--nh-line); border-radius: var(--nh-r-xl); padding: 32px; display: grid; gap: 10px; }
+.card { width: 100%; max-width: 420px; background: var(--nh-card); border-radius: var(--nh-r-xl); padding: 32px; box-shadow: var(--nh-card-shadow); display: grid; gap: 10px; }
 .title { font-size: 28px; font-weight: 800; }
 .sub { color: var(--nh-ink-2); font-size: 14px; margin-bottom: 8px; }
 .foot { margin-top: 10px; font-size: 13px; color: var(--nh-mute); text-align: center; }
@@ -27,7 +34,7 @@
   .side { padding: 20px var(--nh-page-x); gap: 18px; }
   .sideBody { margin: 0; }
   .sideBody h2 { font-size: 22px; }
-  .stats, .sideFoot { display: none; }
+  .stats, .roles, .sideFoot { display: none; }
   .main { padding: 24px var(--nh-page-x) 40px; align-items: start; }
   .card { padding: 24px; }
 }

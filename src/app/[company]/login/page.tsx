@@ -5,6 +5,7 @@ import { AuthShell, AuthTitle, AuthFoot, AuthStats } from "@/components/auth/Aut
 import { Field } from "@/components/ui/Field";
 import { Divider } from "@/components/ui/Divider";
 import { findTenant } from "@/features/tenant";
+import { SITE } from "@/config/site";
 import styles from "@/components/auth/forms.module.css";
 
 type Props = { params: Promise<{ company: string }> };
@@ -26,8 +27,8 @@ export default async function CompanyLoginPage({ params }: Props) {
       side={
         <>
           <p className="nh-eyebrow">This week at {short}</p>
-          <AuthStats items={[["38 h", "median to first answer"], ["81 %", "within the 14-day promise"], ["6", "decisions waiting"]]} />
-          <p>Empty inbox by end of day is the whole ritual.</p>
+          <AuthStats items={[["26 h", "median to first answer"], ["84 %", `within the ${SITE.promiseDays}-day promise`], ["3", "decisions waiting on you"]]} />
+          <p>Numbers from the manager overview. Empty inbox by end of day is the whole ritual.</p>
         </>
       }
     >
