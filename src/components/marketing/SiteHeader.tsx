@@ -13,7 +13,6 @@ export function SiteHeader() {
       </Link>
       <nav className={styles.links} aria-label="Site">
         <Link href="/#how">How it works</Link>
-        <Link href="/#roles">Roles</Link>
         <Link href="/pricing">Pricing</Link>
       </nav>
       <div className={styles.actions}>

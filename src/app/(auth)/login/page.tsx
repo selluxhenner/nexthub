@@ -1,6 +1,6 @@
 // STEP 1 of login: work email or company slug -> /[company]/login. Visual only: the form is a GET to /acme/login.
 import Link from "next/link";
-import { AuthShell, AuthTitle, AuthFoot } from "@/components/auth/AuthShell";
+import { AuthShell, AuthTitle, AuthFoot, AuthRoles } from "@/components/auth/AuthShell";
 import { Field } from "@/components/ui/Field";
 import { Divider } from "@/components/ui/Divider";
 import styles from "@/components/auth/forms.module.css";
@@ -14,7 +14,12 @@ export default function FindCompanyPage() {
         <>
           <p className="nh-eyebrow">Who owns this decision?</p>
           <h2>Nineteen working days.<br />Three of them are work.</h2>
-          <p>Log in to see what is waiting on whom - and for how long.</p>
+          <p>Log in to see what is waiting on whom - and for how long. One home screen per role:</p>
+          <AuthRoles items={[
+            ["Team member", "Raise", "Problem or idea in one box - NextHub names the owner and the deadline."],
+            ["Team leader", "Inbox", "Open items, oldest first. Yes, no and why, pass on, or ask - one click."],
+            ["Manager", "Overview", "What is waiting on you, the wait ledger, where the waiting goes."],
+          ]} />
         </>
       }
     >

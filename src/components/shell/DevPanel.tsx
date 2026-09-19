@@ -1,7 +1,8 @@
 "use client";
-// Dev panel (bottom-right): switch the role, view the inbox as another desk holder, advance the
-// demo clock, demo data on/off, export session cases, reset. Development only - it never ships
-// to a pilot; sessions replace it in Phase 2.
+// Dev panel (bottom-right): switch the persona, view the inbox as another desk holder, advance
+// the demo clock, demo data on/off, delete what this browser added, reset. It stays open while
+// settings change; a click anywhere else or Escape closes it. Demo only - sessions replace it.
+import { useEffect, useRef } from "react";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import { openCasesOf } from "@/components/dashboard/derive";
 import styles from "./DevPanel.module.css";
@@ -9,17 +10,24 @@ import styles from "./DevPanel.module.css";
 export function DevPanel() {
   const ctx = useDemo();
   const { seed, S, role, persona, demo, dev, setDev, leadAs } = ctx;
+  const box = useRef<HTMLDivElement>(null);
   const isLead = role === "leader";
   const day = S.day;
-  const dayLabel = day === 0 ? "Today" : "Today + " + day + (day === 1 ? " day" : " days");
-  const dayNote = day === 0 ? "clocks run from the real date" : "every open clock moved " + day + (day === 1 ? " day" : " days") + " — past the promise, cases escalate";
   const newCount = S.cases.filter((c) => !c.seed).length;
   const status = (isLead && leadAs ? persona.who.name : persona.role.label) + " · demo " + (demo ? "on" : "off") + (day ? " · +" + day + " d" : "");
 
+  // A click outside the panel closes it.
+  useEffect(() => {
+    if (!dev) return;
+    const onDown = (e: MouseEvent) => { if (box.current && !box.current.contains(e.target as Node)) setDev(false); };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [dev, setDev]);
+
   return (
-    <div className={styles.dev}>
+    <div className={styles.dev} ref={box}>
       {dev && (
-        <div className={styles.panel}>
+        <div className={styles.panel} role="dialog" aria-label="Demo controls">
           <div className={styles.label}>Viewing as</div>
           <div className={styles.roles}>
             {seed.personas.map((r) => (
@@ -43,29 +51,24 @@ export function DevPanel() {
             </>
           )}
 
-          <button type="button" className={styles.day} onClick={() => { ctx.act.advanceDay(1); ctx.showToast("One day later. " + (day + 1) + (day + 1 === 1 ? " day" : " days") + " into the demo — watch the clocks."); }}>
-            <span className={styles.rowText}><span className={styles.rowTitle}>{dayLabel}</span><span className={styles.rowNote}>{dayNote}</span></span>
+          <button type="button" className={styles.day} onClick={() => ctx.act.advanceDay(1)}>
+            <span className={styles.rowTitle}>{day === 0 ? "Today" : "Today + " + day + " d"}</span>
             <span className={styles.plusDay}>+1 day</span>
           </button>
 
           <button type="button" className={styles.rowBtn} onClick={ctx.toggleDemo}>
-            <span className={styles.rowText}><span className={styles.rowTitle}>{demo ? "Demo data on" : "Demo data off"}</span><span className={styles.rowNote}>off = empty install, nothing measured yet</span></span>
+            <span className={styles.rowTitle}>Demo data</span>
             <span className={styles.track} data-on={demo ? "true" : undefined}><span className={styles.knob} /></span>
           </button>
 
-          <button type="button" className={styles.rowBtn} onClick={ctx.copySnippet}>
-            <span className={styles.rowText}><span className={styles.rowTitle}>Copy for seed.ts</span><span className={styles.rowNote}>{newCount ? newCount + (newCount === 1 ? " new case this session" : " new cases this session") : "nothing new this session"} · pastes into CASES</span></span>
-            <span className={styles.copyIcon}>⧉</span>
-          </button>
-
           <button type="button" className={styles.rowBtn} onClick={ctx.deleteAdded} disabled={!newCount}>
-            <span className={styles.rowText}><span className={styles.rowTitle}>Delete what you added</span><span className={styles.rowNote}>{newCount ? "removes the " + newCount + (newCount === 1 ? " case" : " cases") + " raised in this browser · seed stays" : "nothing added yet · seed stays"}</span></span>
+            <span className={styles.rowTitle}>Delete added cases{newCount ? " · " + newCount : ""}</span>
             <span className={styles.trash}>✕</span>
           </button>
 
           <div className={styles.foot}>
-            <button type="button" className={styles.reset} onClick={ctx.resetDemo}>Reset demo state</button>
-            <span className={styles.keys}>⌘K search · Esc</span>
+            <button type="button" className={styles.reset} onClick={ctx.resetDemo}>Reset demo</button>
+            <span className={styles.keys}>Esc</span>
           </div>
         </div>
       )}

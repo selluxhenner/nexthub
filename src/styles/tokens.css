@@ -23,6 +23,9 @@
   --nh-brand-line: #b8d9ff;
   --nh-brand-2: var(--nh-brand-hover); /* compatibility alias for existing components */
   --nh-ok: #2f8f5b;
+  /* The signed-in app: light grey ground, white cards that float on a soft shadow instead of a border. */
+  --nh-app-ground: #f5f5f7;
+  --nh-card-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.12);
   /* The two kinds of thing an employee raises. Tint the surface, never the action button. */
   --nh-problem: #c2410c;      /* terracotta: something hurts */
   --nh-problem-tint: #fff1ea;
@@ -36,7 +39,7 @@
 
   --nh-r-sm: 8px;
   --nh-r: 11px;
-  --nh-r-lg: 14px;
+  --nh-r-lg: 18px;
   --nh-r-xl: 22px;
 
   --nh-space: 8px;

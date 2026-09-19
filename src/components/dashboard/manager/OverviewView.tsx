@@ -13,7 +13,7 @@ import styles from "./OverviewView.module.css";
 
 export function OverviewView() {
   const ctx = useDemo();
-  const { seed, S, D, N, log, demo, role, href, deptName, ready } = ctx;
+  const { seed, S, D, N, log, demo, href, deptName, ready } = ctx;
   if (!ready) return <div className={ui.loading} />;
   const P = seed.promiseDays, M = seed.metrics, L = seed.ledger;
   const dash = (v: string) => (demo ? v : "—");
@@ -21,11 +21,10 @@ export function OverviewView() {
 
   const decisions = decisionsWaiting(D);
   const kpis = [
-    { label: "Idea → decision", value: M.ideaToDecision.now, delta: M.ideaToDecision.was, up: true, sub: "median to the decision itself, last 30 days — the first answer comes sooner", spark: M.ideaToDecision.spark },
-    { label: "Shipped this year", value: String(N.shippedTeams), delta: M.shippedWas, up: N.shippedTeams >= was(M.shippedWas), sub: M.stoppedEarly + " stopped early, on purpose", spark: M.shippedSpark },
+    { label: "Idea → decision", value: M.ideaToDecision.now, delta: M.ideaToDecision.was, up: true, sub: "median, last 30 days", spark: M.ideaToDecision.spark },
+    { label: "Shipped this year", value: String(N.shippedTeams), delta: M.shippedWas, up: N.shippedTeams >= was(M.shippedWas), sub: M.stoppedEarly + " stopped early", spark: M.shippedSpark },
     { label: "Value booked", value: M.valueBooked.now, delta: M.valueBooked.delta, up: true, sub: M.valueBooked.sub, spark: M.valueBooked.spark },
-    { label: "Waiting days saved", value: M.waitingDaysSaved.now, delta: "vs old route", up: true, sub: "across " + N.ideas + " ideas, since the clock came in", spark: M.waitingDaysSaved.spark },
-    { label: "Ideas with no owner", value: String(N.noOwner), delta: M.noOwnerWas, up: N.noOwner <= was(M.noOwnerWas), sub: "of " + N.ideas + " in play · " + N.teamsInMotion + " teams in motion", spark: M.noOwnerSpark },
+    { label: "Waiting days saved", value: M.waitingDaysSaved.now, delta: "vs old route", up: true, sub: "across " + N.ideas + " ideas", spark: M.waitingDaysSaved.spark },
   ];
   const stallMax = Math.max(1, ...D.stall.map((x) => x.days));
   const live = (type: string) => log.events.filter((e) => e.type === type).length;
@@ -33,15 +32,8 @@ export function OverviewView() {
     firstAnswer: dash(L.firstAnswer), firstAnswerWas: demo ? L.firstAnswerWas : "measured in pilot",
     withinPromise: dash(L.withinPromise), withinPromiseWas: demo ? L.withinPromiseWas : "measured in pilot",
     overrides: dash(overridesLabel(L.overrides, live("case.override"))),
-    overridesNote: demo ? L.overridesNote : "every overruled proposal is logged — this number is the map’s accuracy",
     escalated: dash(String(L.escalated + S.ledger.escalated)), handedOver: dash(String(L.handedOver + live("case.handed"))),
   };
-  const movement = [
-    { label: "Time to decision", now: M.ideaToDecision.now, was: M.ideaToDecision.was, spark: M.ideaToDecision.spark },
-    { label: "Ideas shipped / yr", now: String(N.shippedTeams), was: M.shippedWas, spark: M.shippedSpark },
-    { label: "Value from ideas", now: M.valueBooked.now, was: M.valueBooked.was, spark: M.valueBooked.spark },
-    { label: "People who raised something", now: M.contributing.now, was: M.contributing.was, spark: M.contributing.spark },
-  ];
   const topProblems = sortProblems(scopedProblems(ctx), "people").slice(0, 5);
   const topIdeas = sortIdeas(scopedIdeas(ctx), "score").slice(0, 5);
   const initiatives = D.initiatives.filter((t) => ctx.matches(t.depts));
@@ -52,14 +44,12 @@ export function OverviewView() {
       <div className={ui.stack14}>
         <div className={ui.cardDark}>
           <div className={ui.head}>
-            <span className={ui.h}>Answer owed — the {P}-day clock is running</span>
+            <span className={ui.h}>Waiting on you</span>
             <Link href={href("/ideas")} className={ui.textlink}>All ideas →</Link>
           </div>
-          <div className={ui.sub}>Every idea gets a yes, a no or a question within {P} days. Past that it escalates one level up — automatically.</div>
           {decisions.length === 0 && (
             <div className={styles.decisionEmpty}>
               <div className={styles.decisionEmptyTitle}>Nothing is waiting on you</div>
-              <div className={styles.decisionEmptySub}>Ideas land here once they have a team, a budget request and {P} days on the clock.</div>
             </div>
           )}
           <div className={styles.decisions}>
@@ -70,17 +60,12 @@ export function OverviewView() {
                   <span className={styles.days} data-hot={i.wait > 20 ? "true" : undefined}>{i.wait} days</span>
                 </div>
                 <span className={styles.due} data-hot={i.wait > 14 ? "true" : undefined}>
-                  {i.wait > P ? i.wait - P + " days past the promise · escalated one level up" : "answer owed in " + (P - i.wait) + " days"}
+                  {i.wait > P ? i.wait - P + " d past the promise · escalated" : "answer owed in " + (P - i.wait) + " d"}
                 </span>
                 <span className={styles.blocker}>{i.blocker || i.teamNote}</span>
                 <span className={styles.upside}>{i.upside} expected upside</span>
               </Link>
             ))}
-          </div>
-          <div className={styles.nextCall}>
-            <span className={ui.eyebrow}>Next decision call</span>
-            <span className={styles.nextCallV}>{demo ? M.nextCall : "not scheduled yet"}</span>
-            <span className={styles.nextCallNote}>{demo ? "Agenda is built from the items above — nothing else on it." : "The first decision call is booked when the first item passes its " + P + " days."}</span>
           </div>
         </div>
 
@@ -102,7 +87,6 @@ export function OverviewView() {
           <div className={ui.card}>
             <div className={ui.head}>
               <span className={ui.h}>Where the waiting goes</span>
-              <span className={ui.small}>every wait segment carries one reason</span>
             </div>
             {D.stall.length === 0 && (
               <div className={`${ui.body} ${ui.mt14}`} style={{ color: "var(--nh-mute)" }}>
@@ -113,7 +97,7 @@ export function OverviewView() {
               {D.stall.map((x, i) => (
                 <div key={x.reason}>
                   <div className={ui.head}>
-                    <span className={styles.stallReason}>{x.reason} <span className={styles.stallNote}>· {x.note}</span></span>
+                    <span className={styles.stallReason}>{x.reason}</span>
                     <span className={styles.stallDays}>{x.days} d</span>
                   </div>
                   <div className={ui.progress}>
@@ -126,11 +110,10 @@ export function OverviewView() {
 
           <div className={ui.cardDark}>
             <div className={ui.h}>The wait ledger</div>
-            <div className={ui.sub}>The two numbers that get reported upward; the rest of this page is context for them.</div>
             <div className={`${ui.grid2} ${ui.mt14}`}>
               <div className={styles.ledgerTile}>
                 <div className={styles.ledgerV}>{ledger.firstAnswer}</div>
-                <div className={styles.ledgerL}>median to the first human answer — a yes, no or question, not yet the decision · <span className={styles.ledgerWas}>{ledger.firstAnswerWas}</span></div>
+                <div className={styles.ledgerL}>median to the first answer · <span className={styles.ledgerWas}>{ledger.firstAnswerWas}</span></div>
               </div>
               <div className={styles.ledgerTile}>
                 <div className={styles.ledgerV}>{ledger.withinPromise}</div>
@@ -138,34 +121,12 @@ export function OverviewView() {
               </div>
             </div>
             <div className={styles.ledgerRows}>
-              <div className={styles.ledgerRow}><span>Escalated one level up this quarter</span><strong>{ledger.escalated}</strong></div>
-              <div className={styles.ledgerRow}><span>Handed sideways to a deputy or buddy</span><strong>{ledger.handedOver}</strong></div>
+              <div className={styles.ledgerRow}><span>Escalated this quarter</span><strong>{ledger.escalated}</strong></div>
+              <div className={styles.ledgerRow}><span>Handed sideways</span><strong>{ledger.handedOver}</strong></div>
               <div className={styles.ledgerRow}><span>Proposed owner overruled</span><strong>{ledger.overrides}</strong></div>
             </div>
-            <div className={`${ui.note} ${styles.ledgerNote}`}>{ledger.overridesNote}</div>
           </div>
         </div>
-
-        {role === "manager" && (
-          <div className={ui.card}>
-            <div className={ui.head}>
-              <span className={ui.h}>Movement since the baseline survey</span>
-              <span className={ui.small}>grey quarters = before · dark = since</span>
-            </div>
-            <div className={styles.movement}>
-              {movement.map((m) => (
-                <div key={m.label} className={styles.mv}>
-                  <div className={ui.eyebrow}>{m.label}</div>
-                  <div className={styles.mvRow}>
-                    <span className={styles.mvV}>{dash(m.now)}</span>
-                    <span className={ui.small}>{demo ? m.was : "measured in pilot"}</span>
-                  </div>
-                  <div className={styles.mvBars}><Bars spark={m.spark} size="lg" flat={!demo} /></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         <div className={ui.split}>
           <div className={ui.card}>
@@ -173,7 +134,6 @@ export function OverviewView() {
               <span className={ui.h}>What people say is broken</span>
               <Link href={href("/problems")} className={ui.textlink}>{N.problems ? "All " + N.problems + " →" : "All →"}</Link>
             </div>
-            <div className={ui.sub}>Ranked by people affected. Unowned means no team is on it.</div>
             {topProblems.length === 0 && <div className={ui.emptyLine}>Nothing raised yet. The first forwarded thread or typed problem shows up here.</div>}
             <div className={`${ui.list} ${ui.mt}`}>
               {topProblems.map((p) => (
@@ -197,7 +157,6 @@ export function OverviewView() {
               <span className={ui.h}>Ideas people have</span>
               <Link href={href("/ideas")} className={ui.textlink}>{N.ideas ? "All " + N.ideas + " →" : "All →"}</Link>
             </div>
-            <div className={ui.sub}>Each one is tied to a problem above and to an expected outcome.</div>
             {topIdeas.length === 0 && <div className={ui.emptyLine}>No ideas yet. They appear as step three of a case, tied to the problem they answer.</div>}
             <div className={`${ui.list} ${ui.mt}`}>
               {topIdeas.map((i) => (
@@ -220,7 +179,6 @@ export function OverviewView() {
               <span className={ui.h}>Who is working with who</span>
               <Link href={href("/collaboration")} className={ui.textlink}>Map →</Link>
             </div>
-            <div className={ui.sub}>Cross-department work in motion, and what it is for.</div>
             {initiatives.length === 0 && <div className={ui.emptyLine}>No cross-team work in motion yet.</div>}
             <div className={`${ui.list} ${ui.mt}`}>
               {initiatives.map((t) => (

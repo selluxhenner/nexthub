@@ -7,7 +7,7 @@
 .box {
   --k: var(--nh-problem); --k-tint: var(--nh-problem-tint); --k-line: var(--nh-problem-line);
   background: var(--nh-card); border: 1px solid var(--k-line); border-radius: var(--nh-r-lg);
-  padding: 18px 20px 16px; box-shadow: 0 1px 0 rgb(0 0 0 / 0.03), 0 12px 32px -20px rgb(0 0 0 / 0.25);
+  padding: 18px 20px 16px; box-shadow: var(--nh-card-shadow);
   transition: border-color 0.2s ease;
 }
 .box[data-kind="idea"] { --k: var(--nh-idea); --k-tint: var(--nh-idea-tint); --k-line: var(--nh-idea-line); }

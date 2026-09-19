@@ -1,102 +1,62 @@
-/* Landing page. Widths vary on purpose:
-   hero 880px · product 1240px · clock 720px · metric 720px · how 1040px · roles 1240px · close 560px. */
+/* Landing page. Two measures: 640px for reading, 1200px for the screens. Lots of air between sections. */
 
 .hero {
-  max-width: 880px; margin: 0 auto;
-  padding: clamp(56px, 9vw, 120px) var(--nh-page-x) 0;
-  display: grid; gap: 22px; justify-items: start;
+  max-width: 760px; margin: 0 auto;
+  padding: clamp(72px, 11vw, 144px) var(--nh-page-x) 0;
+  display: grid; gap: 24px; justify-items: center; text-align: center;
 }
-.hero h1 { font-size: clamp(40px, 6.5vw, 76px); font-weight: 800; max-width: 12ch; }
-.lead { font-size: clamp(16px, 1.6vw, 19px); color: var(--nh-ink-2); max-width: 52ch; line-height: 1.55; }
-.cta { display: flex; gap: 10px; flex-wrap: wrap; }
+.hero h1 { font-size: clamp(42px, 7vw, 84px); font-weight: 700; letter-spacing: -0.035em; line-height: 1.02; }
+.lead { font-size: clamp(17px, 1.7vw, 21px); color: var(--nh-ink-2); max-width: 44ch; line-height: 1.5; }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
 
-/* Product: the real overview in a quiet window frame, fading out at the bottom. */
-.product { max-width: 1240px; margin: clamp(48px, 7vw, 80px) auto 0; padding: 0 var(--nh-page-x); }
-.frame {
-  border: 1px solid var(--nh-line); border-radius: var(--nh-r-xl); overflow: hidden; background: var(--nh-card);
-  box-shadow: 0 1px 2px rgb(20 20 20 / 0.04), 0 24px 60px -24px rgb(20 20 20 / 0.18);
-  mask-image: linear-gradient(to bottom, #000 72%, transparent);
-}
-.frameBar { display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 14px; border-bottom: 1px solid var(--nh-line); }
-.frameBar span { width: 9px; height: 9px; border-radius: 999px; background: var(--nh-line); }
-.frameBar p { flex: 1; text-align: center; margin-right: 40px; font-size: 11px; color: var(--nh-mute); }
-.frame img, .roleShot img { display: block; width: 100%; height: auto; }
+/* The product: the real overview, one frame, a caption. */
+.product { max-width: 1200px; margin: clamp(56px, 8vw, 96px) auto 0; padding: 0 var(--nh-page-x); display: grid; gap: 18px; }
+.product img, .stepShot img { display: block; width: 100%; height: auto; }
+.product img { border-radius: var(--nh-r-xl); box-shadow: var(--nh-card-shadow), 0 40px 80px -40px rgb(20 20 20 / 0.25); }
+.product figcaption { font-size: 14px; color: var(--nh-mute); max-width: 60ch; margin: 0 auto; text-align: center; line-height: 1.5; display: grid; gap: 6px; justify-items: center; }
 
-/* The clock: an open figure, no box - two rules and the bars. */
+/* The clock: the problem in two bars, no box. */
 .clock {
-  max-width: 720px; margin: 8px auto 0;
-  padding: 0 var(--nh-page-x) clamp(56px, 8vw, 96px);
-  display: grid; gap: 18px;
+  max-width: 640px; margin: clamp(80px, 11vw, 144px) auto 0;
+  padding: 0 var(--nh-page-x);
+  display: grid; gap: 4px;
 }
-.clockRow { display: grid; grid-template-columns: 220px 1fr 84px; align-items: center; gap: 20px; padding-top: 16px; border-top: 1px solid var(--nh-line); }
-.clockLabel { font-size: 13px; font-weight: 600; }
-.clockLabel span { display: block; font-weight: 400; color: var(--nh-mute); font-size: 12px; }
+.clockRow { display: grid; grid-template-columns: 200px 1fr 80px; align-items: center; gap: 20px; padding: 18px 0; border-top: 1px solid var(--nh-line); }
+.clockRow:nth-child(2) { border-bottom: 1px solid var(--nh-line); }
+.clockLabel { font-size: 14px; font-weight: 600; }
 .bar { height: 8px; background: var(--nh-line-soft); border-radius: 999px; overflow: hidden; }
 .barFill { height: 100%; background: var(--nh-ink); border-radius: 999px; }
 .barAccent { background: var(--nh-accent); }
-.clockVal { text-align: right; font-size: 14px; font-weight: 600; }
-.clockNote { font-size: 14px; color: var(--nh-mute); max-width: 48ch; margin-top: 4px; }
+.clockVal { text-align: right; font-size: 15px; font-weight: 600; }
+.clockNote { font-size: 15px; color: var(--nh-mute); margin-top: 14px; }
 
-/* Metric: full-bleed dark, narrow text. */
-.metric { background: var(--nh-dark); color: var(--nh-on-dark); }
-.metricInner { max-width: 720px; margin: 0 auto; padding: clamp(56px, 8vw, 88px) var(--nh-page-x); display: grid; gap: 14px; }
-.metric :global(.nh-eyebrow) { color: var(--nh-on-dark-mute); }
-.metricBig { font-size: clamp(26px, 3.6vw, 42px); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
-.metricBig :global(.nh-mono) { color: var(--nh-accent); font-weight: 500; }
-.metricSub { color: var(--nh-on-dark-mute); max-width: 52ch; }
+/* How it works: three steps, each a short text and the real screen under it. */
+.how { max-width: 1200px; margin: 0 auto; padding: clamp(96px, 13vw, 176px) var(--nh-page-x) 0; display: grid; gap: clamp(64px, 9vw, 120px); }
+.how h2 { font-size: clamp(30px, 4vw, 48px); letter-spacing: -0.03em; text-align: center; margin-bottom: -16px; }
+.step { display: grid; gap: 28px; justify-items: center; }
+.stepText { max-width: 560px; text-align: center; display: grid; gap: 12px; justify-items: center; }
+.stepWho { font-family: var(--nh-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--nh-mute); }
+.stepText h3 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -0.025em; }
+.stepText p { color: var(--nh-ink-2); font-size: 16px; line-height: 1.55; max-width: 52ch; }
+/* The why: the one design reason behind the screen, set apart by a thin blue rule so it reads as the reason, not more copy. */
+.stepWhy { display: grid; gap: 4px; justify-items: center; font-size: 14.5px; color: var(--nh-ink-2); max-width: 52ch; padding-top: 12px; margin-top: 2px; border-top: 2px solid var(--nh-brand-line); }
+.stepWhy :global(.nh-eyebrow) { color: var(--nh-brand); }
+.stepShot { width: 100%; border-radius: var(--nh-r-xl); overflow: hidden; box-shadow: var(--nh-card-shadow), 0 30px 60px -36px rgb(20 20 20 / 0.22); }
+.stepShot[data-tight="true"] { max-width: 880px; }
 
-/* How: heading column left, the three moves as a plain list right. */
-.how {
-  max-width: 1040px; margin: 0 auto;
-  padding: clamp(64px, 8vw, 104px) var(--nh-page-x) 0;
-  display: grid; grid-template-columns: minmax(200px, 5fr) 7fr; gap: 40px clamp(32px, 6vw, 96px); align-items: start;
-}
-.howHead { display: grid; gap: 12px; position: sticky; top: 88px; }
-.howHead h2 { font-size: clamp(28px, 3.4vw, 40px); }
-.steps { display: grid; }
-.step { padding: 22px 0; border-top: 1px solid var(--nh-line); display: grid; gap: 8px; }
-.step:last-child { border-bottom: 1px solid var(--nh-line); }
-.step h3 { font-size: 19px; }
-.step p { color: var(--nh-ink-2); font-size: 15px; max-width: 52ch; }
-
-/* Roles: the widest section, one row per role, hairlines instead of boxes; the screen itself below the words. */
-.roles { max-width: 1240px; margin: 0 auto; padding: clamp(64px, 8vw, 104px) var(--nh-page-x) 0; display: grid; gap: 14px; }
-.roles h2 { font-size: clamp(28px, 3.4vw, 40px); }
-.roleTable { margin-top: 24px; display: grid; }
-.roleRow {
-  display: grid; grid-template-columns: 200px minmax(0, 1fr);
-  gap: 16px clamp(24px, 4vw, 64px); padding: 26px 0; border-top: 1px solid var(--nh-line); align-items: start;
-}
-.roleRow:last-child { border-bottom: 1px solid var(--nh-line); }
-.roleWho { display: grid; gap: 6px; }
-.roleWho h3 { font-size: 22px; }
-.roleBody { color: var(--nh-ink-2); font-size: 15px; max-width: 56ch; }
-.roleShot {
-  grid-column: 1 / -1; margin-top: 8px; border: 1px solid var(--nh-line); border-radius: var(--nh-r-lg); overflow: hidden;
-  mask-image: linear-gradient(to bottom, #000 78%, transparent);
-}
-
-/* Close: a short statement, centered, narrow. */
+/* Close: one line, one button. */
 .close {
-  max-width: 560px; margin: 0 auto; padding: clamp(80px, 10vw, 128px) var(--nh-page-x) 24px;
-  display: grid; gap: 14px; justify-items: start;
+  max-width: 560px; margin: 0 auto; padding: clamp(96px, 13vw, 176px) var(--nh-page-x) 40px;
+  display: grid; gap: 16px; justify-items: center; text-align: center;
 }
-.close h2 { font-size: clamp(26px, 3vw, 34px); }
-.close p { color: var(--nh-ink-2); font-size: 15px; }
+.close h2 { font-size: clamp(28px, 3.6vw, 44px); letter-spacing: -0.03em; }
+.close p { color: var(--nh-ink-2); font-size: 16px; line-height: 1.55; max-width: 48ch; }
 .close :global(.nh-btn) { margin-top: 8px; }
 
-@media (max-width: 900px) {
-  .how { grid-template-columns: 1fr; gap: 24px; }
-  .howHead { position: static; }
-  .roleRow { grid-template-columns: 1fr; gap: 12px; }
-  .roleBody { max-width: none; }
-}
 @media (max-width: 640px) {
-  .frame { border-radius: var(--nh-r-lg); }
-  .frameBar { height: 26px; }
-  .frameBar p { display: none; }
-  /* Too small to read whole on a phone: show the left column of each screen at a legible size. */
-  .roleShot img { aspect-ratio: 5 / 4; object-fit: cover; object-position: left top; }
+  .product img, .stepShot { border-radius: var(--nh-r-lg); }
+  /* Whole screens are unreadable on a phone: show the left half at a legible size. */
+  .stepShot:not([data-tight="true"]) img, .product img { aspect-ratio: 5 / 4; object-fit: cover; object-position: left top; }
   .clockRow { grid-template-columns: 1fr 64px; }
   .clockRow .bar { grid-column: 1 / -1; order: 3; }
 }

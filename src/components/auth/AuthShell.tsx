@@ -48,3 +48,14 @@ export function AuthStats({ items }: { items: [string, string][] }) {
     </div>
   );
 }
+
+// The three home screens, one line each - what a visitor will see after the second step.
+export function AuthRoles({ items }: { items: [string, string, string][] }) {
+  return (
+    <ul className={styles.roles}>
+      {items.map(([who, screen, line]) => (
+        <li key={who}><span className="nh-eyebrow">{who}</span><strong>{screen}</strong><small>{line}</small></li>
+      ))}
+    </ul>
+  );
+}

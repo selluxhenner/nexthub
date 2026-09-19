@@ -6,13 +6,13 @@ import { useDemo } from "@/components/dashboard/DemoProvider";
 import { deskCases, inboxSorted, openCases } from "@/components/dashboard/derive";
 import { Avatar, Btn, Empty, Pill, reasonTone, type Tone } from "@/components/dashboard/shared/primitives";
 import { ViewHead } from "@/components/dashboard/shared/ViewHead";
-import { actedBy, onDesk } from "@/features/cases/selectors";
+import { actedBy } from "@/features/cases/selectors";
 import ui from "@/components/dashboard/shared/ui.module.css";
 import styles from "./InboxView.module.css";
 
 export function InboxView({ initialId }: { initialId?: string }) {
   const ctx = useDemo();
-  const { seed, S, D, demo, persona, act, openSheet, showToast, deptName, ready, f } = ctx;
+  const { seed, D, demo, persona, act, openSheet, showToast, ready, f } = ctx;
   // Selection: the page remounts this view (key = ?id) when a search result or link picks a case.
   const [cid, setCid] = useState<string | null>(initialId ?? null);
   if (!ready) return <div className={ui.loading} />;
@@ -27,29 +27,21 @@ export function InboxView({ initialId }: { initialId?: string }) {
   const lastHand = sc?.handed[sc.handed.length - 1];
   const handedNote = !sc ? ""
     : sc.escalated && sc.escalated.to === who.name && sc.assignee !== who.name
-      ? "Escalated to you " + f(sc.escalated.day) + ": " + sc.assignee + " missed the " + P + "-day promise, so the map moved it sideways. Either of you can answer; whoever does, stops the clock."
+      ? "Escalated to you " + f(sc.escalated.day) + " — " + sc.assignee + " missed the " + P + "-day promise."
       : sc.escalated && sc.assignee === who.name
-        ? "Past the promise since " + f(sc.escalated.day) + " — " + sc.escalated.to + " now sees it too. Answer before they do."
-        : lastHand ? "Came to you from " + lastHand.from + " " + f(lastHand.day) + (lastHand.why ? " — “" + lastHand.why + "”" : "") + "." : "";
+        ? "Past the promise since " + f(sc.escalated.day) + " — " + sc.escalated.to + " sees it too."
+        : lastHand ? "From " + lastHand.from + ", " + f(lastHand.day) + (lastHand.why ? " — “" + lastHand.why + "”" : "") : "";
 
   const cleared = D.cases.map((c) => ({ c, did: actedBy(c, who.name) })).filter((x) => x.did === "decided" || x.did === "handed");
   const overdue = open.filter((c) => c.overdue).length;
   const stats = [
-    { v: String(desk.length), l: open.length === desk.length ? "open, addressed to you" : "open, addressed to you · " + (desk.length - open.length) + " paused" },
+    { v: String(desk.length), l: open.length === desk.length ? "on your desk" : "on your desk · " + (desk.length - open.length) + " paused" },
     { v: String(overdue), l: "past the " + P + "-day promise", hot: overdue > 0 },
-    { v: demo ? seed.metrics.lead.medianAnswer : "—", l: "your median time to answer" },
-    { v: demo ? seed.metrics.lead.withinPromise : "—", l: "answered within the promise, Q3" },
+    { v: demo ? seed.metrics.lead.medianAnswer : "—", l: "median time to answer" },
+    { v: demo ? seed.metrics.lead.withinPromise : "—", l: "within the promise, Q3" },
   ];
 
-  // What the team leader's own team is waiting on elsewhere - the other end of the same asymmetry (§12).
-  const myDeptName = deptName(persona.role.dept);
-  const deptOfPerson = (name: string) => { const r = seed.routes.find((x) => x.owner.name === name); return r ? deptName(r.owner.dept) : seed.buddies.find((b) => b.name === name)?.dept ?? "—"; };
-  const waitingOn = D.cases
-    .filter((c) => (c.open || c.status === "asked") && !onDesk(c, who.name) && c.fromDept.indexOf(myDeptName) === 0)
-    .map((c) => ({ key: c.id, title: c.title, owner: c.assignee, dept: deptOfPerson(c.assignee), age: c.clock, promised: P, paused: c.status === "asked", escalatedTo: c.escalated?.to ?? null }))
-    .concat(D.waitingOn.map((w) => ({ key: w.title, title: w.title, owner: w.owner, dept: w.dept, age: w.age + S.day, promised: w.promised, paused: false, escalatedTo: null })));
-
-  const sel = (c: (typeof inbox)[number]) => { if (c.read === null) act.read(c.id); setCid(c.id); };
+const sel = (c: (typeof inbox)[number]) => { if (c.read === null) act.read(c.id); setCid(c.id); };
 
   return (
     <>
@@ -68,8 +60,7 @@ export function InboxView({ initialId }: { initialId?: string }) {
           <div className={ui.stack}>
             <div className={`${ui.card} ${ui.cardList}`}>
               {inbox.length === 0 && (
-                <Empty title={demo ? "Inbox empty" : "Nothing addressed to you yet"}
-                  sub={demo ? "Nothing is waiting on you. That is the goal by the end of every day." : "When someone on your team, or in a neighbouring one, raises a problem the map routes to you, it lands here with a " + P + "-day clock."} />
+                <Empty title="Inbox empty" sub="Nothing is waiting on you." />
               )}
               <div className={ui.list}>
                 {inbox.map((c) => {
@@ -94,7 +85,6 @@ export function InboxView({ initialId }: { initialId?: string }) {
                           </div>
                         </div>
                         <div className={`${ui.chips} ${styles.why}`}>
-                          <span className={styles.whyLabel}>why it is still open:</span>
                           <Pill tone={tone}>{paused ? "waiting on " + c.from : toMe ? "escalated from " + c.assignee : c.reason}</Pill>
                         </div>
                       </div>
@@ -119,32 +109,6 @@ export function InboxView({ initialId }: { initialId?: string }) {
                 </div>
               )}
             </div>
-
-            <div className={`${ui.card} ${styles.waitingCard}`}>
-              <div className={ui.head}>
-                <span className={ui.h}>Your team is waiting on</span>
-                <span className={ui.rowMeta}>the other end of the same problems</span>
-              </div>
-              {waitingOn.length === 0 && <div className={ui.emptyLine}>Nothing your team raised is sitting with another department.</div>}
-              <div className={`${ui.list} ${ui.mt8}`}>
-                {waitingOn.map((w) => (
-                  <div key={w.key} className={styles.waitRow}>
-                    <div className={ui.between}>
-                      <span className={styles.waitTitle}>{w.title}</span>
-                      <span className={styles.waitAge}>{w.age} d</span>
-                    </div>
-                    <div className={`${ui.chips} ${styles.waitMeta}`}>
-                      <span className={styles.waitWith}>with {w.owner} · {w.dept}</span>
-                      <span className={styles.waitState} data-hot={w.age > w.promised ? "true" : undefined}>
-                        {w.paused ? "paused · they asked the sender a question"
-                          : w.age > w.promised ? w.age - w.promised + " d past the promise · escalated" + (w.escalatedTo ? " to " + w.escalatedTo : "")
-                            : "answer owed in " + (w.promised - w.age) + " d"}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
           <div className={`${ui.sticky} ${ui.stack}`}>
@@ -152,8 +116,7 @@ export function InboxView({ initialId }: { initialId?: string }) {
               <div className={ui.eyebrow}>Selected case</div>
               {!sc ? (
                 <>
-                  <div className={ui.h2}>{demo ? "Inbox empty" : "Nothing addressed to you yet"}</div>
-                  <div className={`${ui.body} ${ui.mt8}`}>{demo ? "Nothing is waiting on you. That is the goal by the end of every day." : "When someone raises a problem the map routes to you, it lands here with a " + P + "-day clock."}</div>
+                  <div className={ui.h2}>Inbox empty</div>
                 </>
               ) : (
                 <>
@@ -164,19 +127,14 @@ export function InboxView({ initialId }: { initialId?: string }) {
                   </div>
                   <div className={`${ui.quote} ${ui.mt14}`}>
                     <div className={ui.quoteText}>{sc.body}</div>
-                    <div className={ui.quoteBy}><Avatar name={sc.from} size="sm" /> {sc.from} · {sc.fromDept}</div>
+                    <div className={ui.quoteBy}><Avatar name={sc.from} size="sm" tone="color" /> {sc.from} · {sc.fromDept}</div>
                   </div>
                   <div className={`${ui.grid2} ${ui.mt14}`}>
-                    <div className={ui.tile}><div className={ui.tileTitle}>{sc.upside || "not estimated yet"}</div><div className={ui.tileL}>what it costs while it waits</div></div>
-                    <div className={ui.tile}><div className={ui.tileTitle}>{route ? route.buddy : "—"}</div><div className={ui.tileL}>buddy for this, if you need one</div></div>
-                  </div>
-
-                  <div className={`${ui.eyebrow} ${styles.section}`}>{!route ? "The map has no entry for this" : scMine ? "The map says this is yours" : "The map proposes another owner"}</div>
-                  <div className={`${ui.tile} ${styles.routeTile}`}>
-                    <div className={ui.tileTitle}>
-                      {!route ? "Triage desk" : scMine ? "You · " + route.owner.role : route.owner.name + " · " + route.owner.role + (route.owner.role.includes(deptName(route.owner.dept)) ? "" : ", " + deptName(route.owner.dept))}
+                    <div className={ui.tile}><div className={ui.tileTitle}>{sc.upside || "not estimated yet"}</div><div className={ui.tileL}>what it is worth</div></div>
+                    <div className={ui.tile}>
+                      <div className={ui.tileTitle}>{!route ? "Nobody yet" : scMine ? "You" : route.owner.name}</div>
+                      <div className={ui.tileL}>{!route ? "no map entry — you triage it" : scMine ? "owner on the map · deputy " + route.deputy : "owner on the map · " + route.type}</div>
                     </div>
-                    <div className={ui.tileSub}>row: {route ? route.type : "no matching route — a human triages it"} · deputy {route ? route.deputy : "—"}</div>
                   </div>
 
                   {handedNote && <div className={styles.handedNote}>{handedNote}</div>}
@@ -198,21 +156,20 @@ export function InboxView({ initialId }: { initialId?: string }) {
                   )}
 
                   {sc.status === "asked" && (
-                    <div className={styles.pausedNote}>Waiting for {sc.from} to answer. The clock is paused at {sc.clock}{sc.clock === 1 ? " day" : " days"}; it resumes when they reply.</div>
+                    <div className={styles.pausedNote}>Waiting for {sc.from} to answer · clock paused at {sc.clock} d.</div>
                   )}
 
                   {sc.open && (
                     <>
-                      <div className={`${ui.eyebrow} ${styles.section}`}>One action</div>
+                      <div className={`${ui.eyebrow} ${styles.section}`}>Your move</div>
                       <div className={`${ui.btnRow} ${styles.actions}`}>
-                        <Btn kind="primary" onClick={() => { act.decide(sc.id, "yes"); showToast("Answered “yes” in " + sc.clock + " days. " + sc.from + " has been told; the clock is stopped."); }}>Yes, do it</Btn>
+                        <Btn kind="primary" onClick={() => { act.decide(sc.id, "yes"); showToast("Answered “yes” in " + sc.clock + " days. " + sc.from + " has been told."); }}>Yes, do it</Btn>
                         <Btn onClick={() => openSheet("no", sc.id)}>No, and why</Btn>
                       </div>
                       <div className={ui.btnRow}>
                         <Btn kind="accent" onClick={() => openSheet("hand", sc.id, { picked: handTo })}>{"Pass to " + handTo}</Btn>
-                        <Btn onClick={() => openSheet("ask", sc.id)}>Ask one question</Btn>
+                        <Btn onClick={() => openSheet("ask", sc.id)}>Ask a question</Btn>
                       </div>
-                      <div className={styles.actionNote}>Whatever you pick, the person who raised it is told today. A question pauses the clock; a hand-over keeps it running.</div>
                     </>
                   )}
                 </>
