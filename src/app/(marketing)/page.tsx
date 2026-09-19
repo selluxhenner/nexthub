@@ -73,10 +73,14 @@ export default function LandingPage() {
         {STEPS.map((s, i) => (
           <div className={styles.step} key={s.title}>
             <div className={styles.stepText}>
-              <span className={styles.stepWho}>{i + 1} · {s.who}</span>
-              <h3>{s.title}</h3>
-              <p>{s.body}</p>
-              <p className={styles.stepWhy}><span className="nh-eyebrow">Why</span>{s.why}</p>
+              <div className={styles.stepHead}>
+                <span className={styles.stepWho}>{i + 1} · {s.who}</span>
+                <h3>{s.title}</h3>
+              </div>
+              <div className={styles.stepCopy}>
+                <p>{s.body}</p>
+                <p className={styles.stepWhy}><span className="nh-eyebrow">Why</span>{s.why}</p>
+              </div>
             </div>
             <div className={styles.stepShot} data-tight={s.w === 1600 ? "true" : undefined}>
               <Image src={s.shot} alt={s.alt} width={s.w} height={s.h} sizes="(max-width: 1240px) 100vw, 1200px" />
