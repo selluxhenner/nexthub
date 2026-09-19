@@ -2,6 +2,7 @@
 // A case is one object seen from three sides: `from` = whose "My cases", `assignee` = whose
 // inbox (a hand-over changes it), an escalation puts it on a second desk too.
 import type { Route } from "@/features/demo/types";
+import type { EventLog } from "./events";
 import type { ReducedCase, ReducedIdea, State } from "./reducer";
 
 export type Acted = "decided" | "handed" | "asked";
@@ -55,3 +56,21 @@ export function exportSnippet(state: State): string {
   });
   return rows.length ? "// paste into CASES in src/features/demo/seed.ts\n" + rows.join(",\n") + "," : "";
 }
+
+// Read straight from the log - these events do not change a case's state, so the reducer leaves
+// them alone; they are facts about who stands behind a case and what was said under it.
+export type Affected = { name: string; day: number };
+export type Comment = { id: string; by: string; text: string; day: number };
+
+export function affectedOn(log: EventLog, caseId: string): Affected[] {
+  const out: Affected[] = [];
+  for (const e of log.events) {
+    if (e.target !== caseId) continue;
+    if (e.type === "case.affected" && !out.some((a) => a.name === e.actor)) out.push({ name: e.actor, day: e.day });
+    if (e.type === "case.unaffected") { const i = out.findIndex((a) => a.name === e.actor); if (i >= 0) out.splice(i, 1); }
+  }
+  return out;
+}
+
+export const commentsOn = (log: EventLog, caseId: string): Comment[] =>
+  log.events.filter((e) => e.target === caseId && e.type === "case.commented").map((e) => ({ id: e.id, by: e.actor, text: e.payload.text ?? "", day: e.day }));

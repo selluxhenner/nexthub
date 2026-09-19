@@ -23,13 +23,13 @@ const stageTone = (s: DashRow["stage"]) => (s === "Read" ? "soft" : s === "Quest
 
 export function DashboardView() {
   const ctx = useDemo();
-  const { seed, D, persona, ready, href } = ctx;
+  const { seed, D, log, persona, ready, href } = ctx;
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("score");
   if (!ready) return <div className={styles.loading} />;
 
   const who = persona.who;
-  const rows = D.cases.map((c) => dashboardRow(c, seed.promiseDays, who));
+  const rows = D.cases.map((c) => dashboardRow(c, seed.promiseDays, who, log));
   const counts: Record<Filter, number> = {
     all: rows.length, problem: rows.filter((r) => r.kind === "problem").length, idea: rows.filter((r) => r.kind === "idea").length, mine: rows.filter((r) => r.mine).length,
   };
@@ -49,9 +49,7 @@ export function DashboardView() {
       <div className={styles.head}>
         <div>
           <h1 className={styles.title}>Dashboard</h1>
-          <p className={styles.sub}>
-            {open} open · {late ? late + " past the " + seed.promiseDays + "-day promise" : "all inside the " + seed.promiseDays + "-day promise"} · every desk each one has been on
-          </p>
+          <p className={styles.sub}>{open} open · {late ? late + " past the " + seed.promiseDays + "-day promise" : "all inside the " + seed.promiseDays + "-day promise"}</p>
         </div>
         <div className={styles.tools}>
           <div className={styles.chips} role="group" aria-label="Show">
@@ -88,8 +86,11 @@ export function DashboardView() {
             <span role="cell" className={styles.cTitle}>
               <span className={styles.rowTitle}>{r.title}</span>
               <span className={styles.rowFrom}>
-                <Avatar name={r.from} size="sm" /> {r.mine ? "you" : r.from} · {r.fromDept}
+                <Avatar name={r.from} size="sm" tone="color" /> {r.mine ? "you" : r.from} · {r.fromDept}
                 <span className={styles.kindTag} data-kind={r.kind}>{r.kind}</span>
+                {r.fresh && <span className={styles.newTag}>new</span>}
+                {r.affected.length > 0 && <span className={styles.meta}>+{r.affected.length} affected</span>}
+                {r.attachments > 0 && <span className={styles.meta}>{r.attachments} screenshot{r.attachments > 1 ? "s" : ""}</span>}
               </span>
             </span>
             <span role="cell" className={styles.cOpen} data-overdue={r.overdue ? "true" : undefined}>
@@ -100,7 +101,7 @@ export function DashboardView() {
               {r.chain.map((name, i) => (
                 <span key={i} className={styles.hop} data-last={i === r.chain.length - 1 ? "true" : undefined} data-auto={r.escalated && i === r.chain.length - 1 ? "true" : undefined}>
                   {i > 0 && <span className={styles.arrow} aria-hidden="true">→</span>}
-                  {name}
+                  <Avatar name={name} size="sm" tone="color" />{name}
                 </span>
               ))}
               {r.escalated && <span className={styles.auto}>auto-escalated</span>}

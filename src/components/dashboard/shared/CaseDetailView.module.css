@@ -52,3 +52,29 @@
     color: var(--nh-on-dark-mute);
     margin-top: 3px;
 }
+/* Back + copy link above the two cards. */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.back { padding: 0; border: 0; background: none; font-family: inherit; font-size: 13px; font-weight: 600; color: var(--nh-ink-2); cursor: pointer; }
+.back:hover { color: var(--nh-ink); }
+
+/* Every desk it has been on. */
+.desks { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.chain { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; font-size: 12.5px; color: var(--nh-mute); }
+.hop { display: inline-flex; align-items: center; gap: 5px; }
+.hop[data-last="true"] { color: var(--nh-ink); font-weight: 700; }
+.arrow { color: var(--nh-mute-2); }
+.auto { font-size: 10px; font-weight: 600; color: var(--nh-accent); padding: 1px 6px; border-radius: 999px; background: #fff1ea; }
+
+/* Your move: the actions, who stands behind it, the thread. */
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.standing { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.avatars { display: inline-flex; }
+.avatars > * { margin-left: -6px; box-shadow: 0 0 0 2px var(--nh-card); }
+.avatars > *:first-child { margin-left: 0; }
+.thread { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--nh-line-soft); }
+.comment { display: flex; gap: 8px; align-items: flex-start; }
+.commentText { font-size: 12.5px; color: var(--nh-ink); line-height: 1.5; }
+.commentBy { font-size: 11px; color: var(--nh-mute); margin-top: 2px; }
+.noteRow { display: flex; gap: 8px; }
+.note { flex: 1; height: 34px; padding: 0 12px; border-radius: var(--nh-r-sm); border: 1px solid var(--nh-line); background: var(--nh-card); font-family: inherit; font-size: 13px; color: var(--nh-ink); outline: 0; min-width: 0; }
+.note:focus { border-color: var(--nh-brand); box-shadow: 0 0 0 3px var(--nh-brand-tint); }

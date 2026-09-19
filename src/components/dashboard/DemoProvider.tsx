@@ -13,7 +13,7 @@ import { canAccess, ROLE_HOME, type Role } from "@/config/roles";
 import { appendEvent, newId, type EventLog, type EventPayload, type CaseEventType } from "@/features/cases/events";
 import { reduce, type State } from "@/features/cases/reducer";
 import { dayFormatter, type DayFmt } from "@/features/cases/rows";
-import { exportSnippet } from "@/features/cases/selectors";
+import { affectedOn, exportSnippet } from "@/features/cases/selectors";
 import type { Persona, RolePersona, Seed } from "@/features/demo/types";
 import { counts, demoData, type Counts, type DemoData } from "@/features/metrics";
 import { clearPrefs, getServerSnapshot, getSnapshot, resetLog, setPrefs, subscribe, updateLog } from "@/lib/demo-log";
@@ -32,6 +32,8 @@ export type Act = {
   answer: (id: string, text: string) => void;
   override: (id: string, proposed: string | null, chosen: string) => void;
   cosign: (ideaId: string) => boolean; // true when the co-sign was added, false when withdrawn
+  affect: (caseId: string) => boolean; // "this affects me too" - true when added, false when withdrawn
+  comment: (caseId: string, text: string) => void;
   askIdea: (ideaId: string, text: string) => void;
   approve: (ideaId: string, team: string[], note: string) => void;
   fund: (ideaId: string, team: string[], note: string) => void;
@@ -176,6 +178,12 @@ export function DemoProvider({ tenant, seed, children }: Props) {
       emit(already ? "idea.uncosigned" : "idea.cosigned", ideaId);
       return !already;
     },
+    affect: (caseId) => {
+      const already = affectedOn(log, caseId).some((a) => a.name === actor);
+      emit(already ? "case.unaffected" : "case.affected", caseId);
+      return !already;
+    },
+    comment: (caseId, text) => emit("case.commented", caseId, { text }),
     askIdea: (ideaId, text) => emit("idea.asked", ideaId, { text }),
     approve: (ideaId, team, note) => emit("idea.approved", ideaId, { team, note }),
     fund: (ideaId, team, note) => emit("idea.funded", ideaId, { team, note }),

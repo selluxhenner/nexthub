@@ -11,6 +11,7 @@ export type Scorable = {
   age: number; // days since raised
   open: boolean;
   affected?: number; // people who said "this affects me too"
+  evidence?: number; // screenshots or images attached
 };
 
 const BASE = 35;
@@ -24,6 +25,7 @@ export function scoreCase(c: Scorable, promiseDays: number): Score {
   if (c.open && c.age > 0) parts.push({ label: "Waiting " + c.age + " d", points: Math.min(15, c.age) });
   if (c.open && c.age > promiseDays) parts.push({ label: "Past the promise", points: 5 });
   if (c.affected) parts.push({ label: "Affects " + c.affected + " more", points: Math.min(15, c.affected * 5) });
+  if (c.evidence) parts.push({ label: "Evidence attached", points: 10 });
   const value = Math.min(MAX, parts.reduce((a, p) => a + p.points, BASE));
   return { value, parts };
 }
