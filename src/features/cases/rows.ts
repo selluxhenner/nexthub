@@ -1,6 +1,8 @@
 // "My cases" rows: facts in, sentences out. Port of mineRow / cosignRow in legacy/demo/js/dashboard.js.
 // Nothing here is stored - every string is rebuilt from the reduced case at render time.
 import { days } from "@/lib/utils/format";
+import { scoreCase, type Score } from "@/features/scoring";
+import type { CaseKind } from "./events";
 import type { ReducedCase, ReducedIdea } from "./reducer";
 
 export type StepTone = "done" | "now" | "late" | "todo";
@@ -98,5 +100,26 @@ export function cosignRow(i: ReducedIdea, day: number, f: DayFmt, handle: string
     reply: i.teamNote, replyBy: lead + " · proposer",
     outcome: ap ? "approved" : i.status === "Shipped" ? i.expected : "pending",
     outcomeNote: i.upside && i.upside !== "not modelled" ? i.upside + " / yr expected" + (ap || i.status === "Shipped" ? "" : " if approved") : "upside not modelled yet",
+  };
+}
+
+// One row of the employee's dashboard: every problem and idea in the company, as facts.
+// `chain` is every desk it has been on, in order - the first assignee, each hand-over, and the
+// automatic escalation if the promise was missed. The last name is where it is now.
+export type DashStage = "Sent" | "Read" | "Question" | "Approved" | "Declined" | "Building" | "Shipped";
+export type DashRow = {
+  id: string; kind: CaseKind; title: string; from: string; fromDept: string; mine: boolean;
+  openDays: number; open: boolean; overdue: boolean; stage: DashStage; chain: string[]; escalated: boolean; score: Score; sortDay: number;
+};
+
+export function dashboardRow(c: ReducedCase, promiseDays: number, viewer: { name: string; handle: string | null }): DashRow {
+  const stage: DashStage = c.shipped ? "Shipped" : c.building ? "Building" : c.decided ? (c.decided.answer === "yes" ? "Approved" : "Declined")
+    : c.status === "asked" ? "Question" : c.read !== null ? "Read" : "Sent";
+  const chain = [c.handed.length ? c.handed[0].from : c.assignee, ...c.handed.map((h) => h.to)];
+  if (c.escalated) chain.push(c.escalated.to);
+  return {
+    id: c.id, kind: c.kind, title: c.title, from: c.from, fromDept: c.fromDept, mine: c.from === viewer.name || c.from === viewer.handle,
+    openDays: c.age, open: c.open, overdue: c.overdue, stage, chain, escalated: !!c.escalated,
+    score: scoreCase(c, promiseDays), sortDay: c.raisedDay,
   };
 }

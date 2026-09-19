@@ -1,11 +1,10 @@
 "use client";
 // One case, seen from three sides: its history as a timeline built from the event log.
-// Visible to whoever raised it, whoever it is addressed to, and managers (docs/ROUTES.md).
+// Visible to everyone signed in (docs/ROUTES.md): it stays visible until it is answered, that is the promise.
 import Link from "next/link";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import { Avatar, Empty, Pill, reasonTone, statusTone } from "@/components/dashboard/shared/primitives";
 import type { CaseEvent } from "@/features/cases/events";
-import { onDesk } from "@/features/cases/selectors";
 import ui from "@/components/dashboard/shared/ui.module.css";
 import styles from "./CaseDetailView.module.css";
 
@@ -30,15 +29,13 @@ function sentence(e: CaseEvent): string {
 
 export function CaseDetailView({ caseId }: { caseId: string }) {
   const ctx = useDemo();
-  const { S, role, persona, href, ready, f } = ctx;
+  const { S, href, ready, f } = ctx;
   if (!ready) return <div className={ui.loading} />;
   const c = S.cases.find((x) => x.id === caseId);
-  const who = persona.who;
-  const mayOpen = !!c && (role === "manager" || c.from === who.handle || c.from === who.name || onDesk(c, who.name));
-  if (!c || !mayOpen) {
+  if (!c) {
     return (
       <div className={ui.card}>
-        <Empty title={c ? "Not addressed to you" : "No such case"} sub={c ? "A case is visible to whoever raised it, whoever it is addressed to, and managers." : "Nothing with the id “" + caseId + "” exists for this company."}>
+        <Empty title="No such case" sub={"Nothing with the id “" + caseId + "” exists for this company."}>
           <Link href={href("/")} className={ui.ghost}>Back home</Link>
         </Empty>
       </div>
@@ -51,7 +48,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
   return (
     <div className={ui.split}>
       <div className={ui.card}>
-        <div className={ui.eyebrow}>Case {c.id}</div>
+        <div className={ui.eyebrow}>{c.kind === "idea" ? "Idea" : "Problem"} · {c.id}</div>
         <div className={ui.h2}>{c.title}</div>
         <div className={`${ui.chips} ${styles.meta}`}>
           <Pill tone={statusTone(STATUS_LABEL[c.status])}>{STATUS_LABEL[c.status]}</Pill>

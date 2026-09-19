@@ -6,13 +6,18 @@ export type NavItem = { label: string; href: string; roles: readonly Role[] };
 export const NAV: NavItem[] = [
   { label: "Overview", href: "/manager", roles: ["manager"] },
   { label: "Inbox", href: "/leader", roles: ["leader", "manager"] },
-  { label: "Raise", href: "/raise", roles: ["member"] },
   { label: "My cases", href: "/team", roles: ["member", "leader", "manager"] },
   { label: "Problems", href: "/problems", roles: ["member", "leader", "manager"] },
   { label: "Ideas", href: "/ideas", roles: ["member", "leader", "manager"] },
   { label: "Collaboration", href: "/collaboration", roles: ["member", "leader", "manager"] },
   { label: "Progress", href: "/progress", roles: ["member", "leader", "manager"] },
   { label: "Settings", href: "/settings", roles: ["manager"] },
+];
+
+// The simple shell (SHELL[role] === "simple"): two places and a profile button. hrefs relative to /[company].
+export const NAV_SIMPLE: { label: string; href: string }[] = [
+  { label: "Raise", href: "/raise" },
+  { label: "Dashboard", href: "/dashboard" },
 ];
 
 export function navFor(role: Role): NavItem[] {

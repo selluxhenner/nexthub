@@ -47,10 +47,10 @@ describe("reduce", () => {
     expect(c.kind, "kind missing on the event = problem").toBe("problem");
   });
 
-  it("case.raised keeps the kind: an idea stays an idea, seed cases are problems", () => {
+  it("case.raised keeps the kind: an idea stays an idea, a seed row without one is a problem", () => {
     const S = reduce(SEED, logOf(ev("case.raised", "Anonymous #4471", "c_idea", { kind: "idea", title: "Shared fixture library", routeId: null, assignee: "T. Vogel", fromDept: "Production, Line 3" })));
     expect(find(S.cases, "c_idea").kind).toBe("idea");
-    expect(S.cases.filter((c) => c.seed).every((c) => c.kind === "problem")).toBe(true);
+    expect(S.cases.filter((c) => c.seed).map((c) => c.kind).join()).toBe("problem,problem,problem,problem,problem,idea,idea,idea");
   });
 
   it("case.decided closes the case; clock stops; cleared list credits the actor", () => {

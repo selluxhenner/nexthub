@@ -14,17 +14,19 @@
 | `/[company]/manager` | `.../(app)/manager/page.tsx` | yes | manager | Overview |
 | `/[company]/leader` | `.../(app)/leader/page.tsx` | yes | leader, manager | Inbox |
 | `/[company]/raise` | `.../(app)/raise/page.tsx` | yes | any | Raise a problem or an idea (member home) |
+| `/[company]/dashboard` | `.../(app)/dashboard/page.tsx` | yes | any | Every problem and idea: open since, on whose desk, stage, score |
 | `/[company]/team` | `.../(app)/team/page.tsx` | yes | any | My cases |
 | `/[company]/problems` | `.../(app)/problems/page.tsx` | yes | any | Problems |
 | `/[company]/ideas` | `.../(app)/ideas/page.tsx` | yes | any | Ideas |
 | `/[company]/collaboration` | `.../(app)/collaboration/page.tsx` | yes | any | Initiatives |
 | `/[company]/progress` | `.../(app)/progress/page.tsx` | yes | any | Movement since baseline |
-| `/[company]/cases/[caseId]` | `.../(app)/cases/[caseId]/page.tsx` | yes | own / addressed / manager | Case detail |
+| `/[company]/cases/[caseId]` | `.../(app)/cases/[caseId]/page.tsx` | yes | any | Case detail |
 | `/[company]/settings/*` | `.../(app)/settings/{company,members,routing}/page.tsx` | yes | manager | Company admin |
 | `/api/health` | `api/health/route.ts` | - | - | Uptime check |
 
-Role rules are data in `src/config/roles.ts` (`ROLE_HOME`, `ROLE_ACCESS`, `canAccess()`) and nav
-per role in `src/config/nav.ts`. Enforcement (`src/proxy.ts` + the `(app)` layout) arrives with
+Role rules are data in `src/config/roles.ts` (`ROLE_HOME`, `ROLE_ACCESS`, `canAccess()`, `SHELL`) and nav
+per role in `src/config/nav.ts`. `SHELL[role]` picks the chrome: members get the simple bar
+(logo, Raise | Dashboard, profile - `SimpleShell`), leaders and managers the rail + top bar. Enforcement (`src/proxy.ts` + the `(app)` layout) arrives with
 sessions in Phase 2; until then every app page renders with the demo tenant as manager.
 
 Layouts nest: `app/layout.tsx` (html, fonts) -> `(marketing)/layout.tsx` (header, footer) or

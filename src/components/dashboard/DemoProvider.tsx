@@ -68,10 +68,10 @@ export function useDemo(): DemoContext {
   return c;
 }
 
-// First visit: the URL says which role the visitor meant (/leader -> leader, /raise or /team -> member).
+// First visit: the URL says which role the visitor meant (/leader -> leader, /raise, /dashboard or /team -> member).
 function roleFromPath(path: string): Role {
   if (path === "/leader" || path.startsWith("/leader/")) return "leader";
-  if (path === "/raise" || path === "/team" || path.startsWith("/team/")) return "member";
+  if (path === "/raise" || path === "/dashboard" || path === "/team" || path.startsWith("/team/")) return "member";
   return "manager";
 }
 

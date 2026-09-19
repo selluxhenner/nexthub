@@ -9,6 +9,11 @@ export const ROLE_HOME: Record<Role, string> = {
   member: "/raise", // Raise a problem or an idea
 };
 
+// Which chrome a role gets. "simple" = logo + Raise / Dashboard / profile, nothing else (the
+// employee never sees the rail); "rail" = the full left rail + top bar.
+export type Shell = "simple" | "rail";
+export const SHELL: Record<Role, Shell> = { manager: "rail", leader: "rail", member: "simple" };
+
 // Who may open what. Path prefixes relative to /[company]. Anything not listed = any signed-in role.
 export const ROLE_ACCESS: Record<string, readonly Role[]> = {
   "/manager": ["manager"],
