@@ -14,7 +14,7 @@ export function ViewHead({ view, tools, strip }: { view: string; tools?: React.R
       <div className={styles.head}>
         <div className={styles.headText}>
           <h1 className={styles.title}>{copy.title}</h1>
-          <div className={styles.sub}>{copy.sub.replace("{signals}", demo ? fmt(seed.metrics.signals) : "0")}</div>
+          {copy.sub && <div className={styles.sub}>{copy.sub.replace("{signals}", demo ? fmt(seed.metrics.signals) : "0")}</div>}
         </div>
         <div className={styles.tools}>
           {dept !== "All" && (

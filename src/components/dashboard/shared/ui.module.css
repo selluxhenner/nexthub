@@ -1,10 +1,10 @@
 /* Dashboard primitives shared by every role view. Ports the inline style helpers of the legacy
    demo (pill, row, mark, bars, btn, stat, quote) so views carry class names, not style objects. */
 
-.card { background: var(--nh-card); border: 1px solid var(--nh-line); border-radius: 14px; padding: 20px 20px 18px; min-width: 0; }
+.card { background: var(--nh-card); border: 0; border-radius: var(--nh-r-lg); padding: 20px 20px 18px; min-width: 0; box-shadow: var(--nh-card-shadow); }
 .cardTight { padding: 18px 18px 16px; }
 .cardList { padding: 6px 18px 12px; }
-.cardDark { background: var(--nh-dark); border-radius: 14px; padding: 18px 20px 20px; color: var(--nh-on-dark); min-width: 0; }
+.cardDark { background: var(--nh-dark); border-radius: var(--nh-r-lg); padding: 18px 20px 20px; color: var(--nh-on-dark); min-width: 0; box-shadow: var(--nh-card-shadow); }
 
 .eyebrow { font-family: var(--nh-mono); font-size: 9.5px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--nh-on-dark-mute); }
 .cardDark .eyebrow { color: var(--nh-mute-2); }

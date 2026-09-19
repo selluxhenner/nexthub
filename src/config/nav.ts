@@ -14,11 +14,24 @@ export const NAV: NavItem[] = [
   { label: "Settings", href: "/settings", roles: ["manager"] },
 ];
 
-// The simple shell (SHELL[role] === "simple"): two places and a profile button. hrefs relative to /[company].
-export const NAV_SIMPLE: { label: string; href: string }[] = [
-  { label: "Raise", href: "/raise" },
-  { label: "Dashboard", href: "/dashboard" },
-];
+// The simple shell (SHELL[role] === "simple"): two or three places and a profile button, per role.
+// hrefs relative to /[company]. `count` names what the badge next to the label counts.
+export type SimpleNavItem = { label: string; href: string; count?: "inbox" | "decisions" };
+export const NAV_SIMPLE: Record<Role, SimpleNavItem[]> = {
+  member: [
+    { label: "Raise", href: "/raise" },
+    { label: "Dashboard", href: "/dashboard" },
+  ],
+  leader: [
+    { label: "Raise", href: "/raise" },
+    { label: "Inbox", href: "/leader", count: "inbox" },
+    { label: "Dashboard", href: "/dashboard" },
+  ],
+  manager: [
+    { label: "Overview", href: "/manager", count: "decisions" },
+    { label: "Dashboard", href: "/dashboard" },
+  ],
+};
 
 export function navFor(role: Role): NavItem[] {
   return NAV.filter((n) => n.roles.includes(role));

@@ -331,8 +331,8 @@ export const METRICS: Metrics = {
 
 export const VIEWS: Record<string, ViewCopy> = {
   mine: { title: 'What happened to what you sent', sub: 'Every problem or idea you raised, who is answering it, when they owe you that answer, and what it changed once it shipped.' },
-  inbox: { title: 'Addressed to you', sub: 'Open items sorted by age. Each one takes one action: decide, hand it to your deputy, or ask one question. Empty by end of day is the whole ritual.' },
-  overview: { title: 'Where your department is stuck', sub: 'One screen: what is blocked on you, how the system is performing, and what people are saying this quarter. Widen the scope to see the rest of the company.' },
+  inbox: { title: 'Inbox', sub: '' },
+  overview: { title: 'Overview', sub: '' },
   problems: { title: 'Problems named by employees', sub: 'Root problems clustered from {signals} signals. People choose whether to sign their name.' },
   ideas: { title: 'Ideas from the organisation', sub: 'Each idea is tagged on three case criteria — strategic fit, urgency and the manager KPI it moves. No score, no ranking of people.' },
   network: { title: 'Collaboration across departments', sub: 'Every project, the people on it, and where in the company it is waiting. Click a project or a person.' },

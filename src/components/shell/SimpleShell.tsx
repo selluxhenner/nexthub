@@ -1,6 +1,6 @@
 "use client";
-// The employee's chrome (SHELL[role] === "simple"): the logo, Raise | Dashboard, and a profile
-// button. No rail, no search, no counts - the whole point is that there is nothing to learn.
+// The chrome for every role in the demo (SHELL[role] === "simple"): the logo, two or three
+// places (NAV_SIMPLE[role]), and a profile button. No rail, no search - nothing to learn.
 // Shares the overlays with AppShell (input sheet, toast, dev panel) so every action still works.
 import Image from "next/image";
 import Link from "next/link";
@@ -8,19 +8,22 @@ import { usePathname } from "next/navigation";
 import { NAV_SIMPLE } from "@/config/nav";
 import { SITE } from "@/config/site";
 import { useDemo } from "@/components/dashboard/DemoProvider";
-import { mineRows } from "@/components/dashboard/derive";
+import { mineRows, openCases } from "@/components/dashboard/derive";
+import { decisionsWaiting } from "@/features/metrics";
 import { DevPanel } from "./DevPanel";
 import { InputSheet } from "./InputSheet";
 import styles from "./SimpleShell.module.css";
 
 export function SimpleShell({ children }: { children: React.ReactNode }) {
   const ctx = useDemo();
-  const { tenant, persona, actor, email, pop, setPop, togglePop, sheet, toast, logout } = ctx;
+  const { tenant, role, persona, actor, email, pop, setPop, togglePop, sheet, toast, logout, D } = ctx;
   const pathname = usePathname();
   const who = persona.who;
   const anon = actor !== who.name; // the employee posts under a handle
   const mine = mineRows(ctx);
   const shipped = mine.filter((m) => m.status === "Shipped").length;
+  // Badges: what is waiting on this person right now.
+  const counts = { inbox: openCases(ctx).length, decisions: decisionsWaiting(D).length };
 
   return (
     <div className={styles.root}>
@@ -34,12 +37,13 @@ export function SimpleShell({ children }: { children: React.ReactNode }) {
         </Link>
 
         <nav className={styles.nav} aria-label="Main">
-          {NAV_SIMPLE.map((n) => {
+          {NAV_SIMPLE[role].map((n) => {
             const href = "/" + tenant.slug + n.href;
             const active = pathname === href || pathname.startsWith(href + "/");
+            const n1 = n.count ? counts[n.count] : 0;
             return (
               <Link key={n.href} href={href} className={styles.navItem} data-active={active ? "true" : undefined} aria-current={active ? "page" : undefined} onClick={() => setPop(null)}>
-                {n.label}
+                {n.label}{n1 > 0 && <span className={styles.navCount}>{n1}</span>}
               </Link>
             );
           })}
@@ -60,6 +64,7 @@ export function SimpleShell({ children }: { children: React.ReactNode }) {
                 </span>
               </div>
               <div className={styles.meStats}>
+                <span><strong>{persona.role.label}</strong></span>
                 <span><strong>{mine.length}</strong> raised</span>
                 <span><strong>{shipped}</strong> shipped</span>
               </div>
