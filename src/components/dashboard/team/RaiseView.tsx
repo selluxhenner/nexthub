@@ -3,12 +3,14 @@
 // people it also hits, then "Send to NextHub". NextHub evaluates it against the company context
 // (org chart, routing map, goals, spend rule, known problems) - features/evaluate - and the box
 // shows that evaluation step by step before the case is raised. Demo: the steps are timed, the
-// facts are real; the screenshots stay in this browser, only their count becomes an event fact.
+// facts are real; the screenshots stay in this browser (src/lib/shots.ts, keyed by case id), only
+// their count becomes an event fact.
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import type { CaseKind } from "@/features/cases/events";
 import { evaluate, type Evaluation } from "@/features/evaluate";
+import { saveShots, shrinkImage, type Shot } from "@/lib/shots";
 import styles from "./RaiseView.module.css";
 
 const KINDS: { id: CaseKind; label: string; placeholder: string }[] = [
@@ -18,18 +20,18 @@ const KINDS: { id: CaseKind; label: string; placeholder: string }[] = [
 const STEP_MS = 1100; // one step per ~1.1 s -> about 9 s for eight steps
 const MAX_SHOTS = 4;
 
-type Shot = { name: string; url: string };
 type Phase = { at: "edit" } | { at: "thinking"; ev: Evaluation; done: number } | { at: "done"; ev: Evaluation; id: string };
 
 export function RaiseView() {
   const ctx = useDemo();
-  const { seed, S, persona, act, ready, href } = ctx;
+  const { seed, S, persona, act, ready, href, tenant, showToast } = ctx;
   const [kind, setKind] = useState<CaseKind>("problem");
   const [draft, setDraft] = useState("");
   const [shots, setShots] = useState<Shot[]>([]);
   const [affected, setAffected] = useState<string[]>([]);
   const [person, setPerson] = useState("");
   const [askPeople, setAskPeople] = useState(false);
+  const [reading, setReading] = useState(0); // files still being shrunk
   const [phase, setPhase] = useState<Phase>({ at: "edit" });
   const fileRef = useRef<HTMLInputElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -43,16 +45,12 @@ export function RaiseView() {
       if (done < ev.steps.length) setPhase({ at: "thinking", ev, done: done + 1 });
       else {
         const id = act.raise(ev.payload);
+        if (!saveShots(tenant.slug, id, shots)) showToast("Case raised — the screenshots did not fit in this browser's storage.");
         setPhase({ at: "done", ev, id });
       }
     }, reduced ? 150 : STEP_MS);
     return () => { if (timer.current) clearTimeout(timer.current); };
-  }, [phase, act]);
-
-  // Object URLs are browser memory: release whatever is still previewed when the page goes.
-  const shotsRef = useRef<Shot[]>([]);
-  useEffect(() => { shotsRef.current = shots; }, [shots]);
-  useEffect(() => () => shotsRef.current.forEach((s) => URL.revokeObjectURL(s.url)), []);
+  }, [phase, act, shots, tenant.slug, showToast]); // shots cannot change while thinking: the edit box is gone
 
   if (!ready) return <div className={styles.loading} />;
 
@@ -61,14 +59,17 @@ export function RaiseView() {
   const canSend = draft.trim().length >= 8;
   const names = seed.people.map((p) => p.name).filter((n) => n !== who.name && !affected.includes(n));
 
+  // Picked files are shrunk to small data URLs right away, so the preview and what gets stored are the same bytes.
   const addShots = (files: FileList | null) => {
-    if (!files) return;
-    const next = Array.from(files).filter((f) => f.type.startsWith("image/")).slice(0, MAX_SHOTS - shots.length)
-      .map((f) => ({ name: f.name, url: URL.createObjectURL(f) }));
-    if (next.length) setShots((s) => [...s, ...next]);
-    if (fileRef.current) fileRef.current.value = "";
+    const picked = Array.from(files ?? []).filter((f) => f.type.startsWith("image/")).slice(0, MAX_SHOTS - shots.length);
+    if (fileRef.current) fileRef.current.value = ""; // after the snapshot: clearing empties the FileList; same file again must fire change
+    if (!picked.length) return;
+    setReading((n) => n + picked.length);
+    picked.forEach((f) => shrinkImage(f)
+      .then((shot) => setShots((s) => (s.length < MAX_SHOTS ? [...s, shot] : s)), () => showToast("Could not read " + f.name + " as an image."))
+      .finally(() => setReading((n) => n - 1)));
   };
-  const removeShot = (url: string) => { URL.revokeObjectURL(url); setShots((s) => s.filter((x) => x.url !== url)); };
+  const removeShot = (url: string) => setShots((s) => s.filter((x) => x.url !== url));
   const addPerson = () => {
     const n = person.trim();
     if (!n || affected.includes(n)) { setPerson(""); return; }
@@ -80,7 +81,6 @@ export function RaiseView() {
     setPhase({ at: "thinking", ev, done: 0 });
   };
   const reset = () => {
-    shots.forEach((s) => URL.revokeObjectURL(s.url));
     setDraft(""); setShots([]); setAffected([]); setPerson(""); setAskPeople(false); setPhase({ at: "edit" });
   };
 
@@ -145,7 +145,7 @@ export function RaiseView() {
           <div className={styles.shots}>
             {shots.map((s) => (
               <span key={s.url} className={styles.shot}>
-                {/* eslint-disable-next-line @next/next/no-img-element -- a local object URL, never fetched */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- a local data URL, never fetched */}
                 <img src={s.url} alt={s.name} />
                 <button type="button" className={styles.shotX} onClick={() => removeShot(s.url)} aria-label={"Remove " + s.name}>×</button>
               </span>
@@ -172,7 +172,9 @@ export function RaiseView() {
         <div className={styles.foot}>
           <div className={styles.adds}>
             <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={(e) => addShots(e.target.files)} />
-            <button type="button" className={styles.add} onClick={() => fileRef.current?.click()} disabled={shots.length >= MAX_SHOTS}>+ screenshot</button>
+            <button type="button" className={styles.add} onClick={() => fileRef.current?.click()} disabled={shots.length + reading >= MAX_SHOTS} aria-busy={reading > 0 || undefined}>
+              {reading > 0 ? "adding…" : shots.length ? "+ another screenshot" : "+ screenshot"}
+            </button>
             <button type="button" className={styles.add} onClick={() => setAskPeople((v) => !v)} aria-expanded={askPeople}>+ also affected</button>
           </div>
           <button type="button" className={`nh-btn nh-btn-primary ${styles.send}`} disabled={!canSend} onClick={send}>Send to NextHub</button>

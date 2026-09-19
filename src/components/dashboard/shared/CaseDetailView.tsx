@@ -4,11 +4,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import { Avatar, Empty, Pill, reasonTone, statusTone } from "@/components/dashboard/shared/primitives";
 import type { CaseEvent } from "@/features/cases/events";
 import { raisedWith } from "@/features/cases/rows";
 import { affectedOn, commentsOn } from "@/features/cases/selectors";
+import { loadShots } from "@/lib/shots";
 import ui from "@/components/dashboard/shared/ui.module.css";
 import styles from "./CaseDetailView.module.css";
 
@@ -33,9 +35,10 @@ function sentence(e: CaseEvent): string {
 
 export function CaseDetailView({ caseId }: { caseId: string }) {
   const ctx = useDemo();
-  const { S, log, href, ready, f, actor, persona, act, openSheet, showToast } = ctx;
+  const { S, log, href, ready, f, actor, persona, act, openSheet, showToast, tenant } = ctx;
   const router = useRouter();
   const [note, setNote] = useState("");
+  const [big, setBig] = useState<number | null>(null); // index of the screenshot shown full size
   if (!ready) return <div className={ui.loading} />;
   const c = S.cases.find((x) => x.id === caseId);
   if (!c) {
@@ -49,6 +52,7 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
   }
   const P = ctx.seed.promiseDays;
   const extra = raisedWith(c);
+  const shots = loadShots(tenant.slug, c.id); // whatever this browser kept when the case was raised
   const who = persona.who;
   const mine = c.from === who.name || c.from === who.handle;
   const affected = affectedOn(log, c.id), comments = commentsOn(log, c.id);
@@ -85,6 +89,17 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
         <div className={`${ui.quote} ${ui.mt14}`}>
           <div className={ui.quoteText}>{c.body || "—"}</div>
           <div className={ui.quoteBy}><Avatar name={c.from} size="sm" tone="color" /> {c.from} · {c.fromDept}{extra.attachments > 0 && <> · {extra.attachments} screenshot{extra.attachments > 1 ? "s" : ""} attached</>}</div>
+          {shots.length > 0 && (
+            <div className={styles.shots}>
+              {shots.map((s, i) => (
+                <button key={i} type="button" className={styles.shot} onClick={() => setBig(i)} aria-label={"Open " + s.name}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- a local data URL, never fetched */}
+                  <img src={s.url} alt={s.name} />
+                </button>
+              ))}
+            </div>
+          )}
+          {extra.attachments > 0 && shots.length === 0 && <div className={styles.shotsGone}>The screenshots were kept in the browser that raised this case.</div>}
         </div>
         <div className={styles.desks}>
           <span className={ui.eyebrow}>Desks</span>
@@ -171,6 +186,19 @@ export function CaseDetailView({ caseId }: { caseId: string }) {
       </div>
       </div>
     </div>
+    {big !== null && shots[big] && createPortal(
+      <div className={styles.lightbox} role="dialog" aria-modal="true" aria-label={shots[big].name} onClick={() => setBig(null)}
+        onKeyDown={(e) => { if (e.key === "Escape") setBig(null); }} tabIndex={-1} ref={(el) => el?.focus()}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- a local data URL, never fetched */}
+        <img src={shots[big].url} alt={shots[big].name} onClick={(e) => e.stopPropagation()} />
+        <div className={styles.lightboxBar}>
+          <span>{shots[big].name} · {big + 1}/{shots.length}</span>
+          {shots.length > 1 && <button type="button" onClick={(e) => { e.stopPropagation(); setBig((big + 1) % shots.length); }}>Next →</button>}
+          <button type="button" onClick={() => setBig(null)}>Close</button>
+        </div>
+      </div>,
+      document.body,
+    )}
     </>
   );
 }
