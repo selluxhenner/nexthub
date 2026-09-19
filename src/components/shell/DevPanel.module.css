@@ -14,14 +14,11 @@
 .day, .rowBtn { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; cursor: pointer; text-align: left; font-family: inherit; }
 .day { margin-top: 12px; padding: 9px 10px; border-radius: 9px; background: #26261f; border: 1px solid #33332e; }
 .rowBtn { margin-top: 12px; padding: 9px 2px 0; border: 0; border-top: 1px solid var(--nh-dark-line); background: transparent; }
-.rowText { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .rowTitle { font-size: 12.5px; font-weight: 700; color: var(--nh-on-dark); }
-.rowNote { font-size: 10.5px; color: #7d7c73; }
 .plusDay { font-family: var(--nh-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--nh-on-dark); background: var(--nh-accent); border-radius: 7px; padding: 5px 8px; white-space: nowrap; }
 .track { width: 30px; height: 17px; border-radius: 999px; padding: 2px; background: #4a4a44; display: flex; justify-content: flex-start; flex: none; }
 .track[data-on="true"] { background: var(--nh-accent); justify-content: flex-end; }
 .knob { width: 13px; height: 13px; border-radius: 50%; background: var(--nh-on-dark); display: block; }
-.copyIcon { font-family: var(--nh-mono); font-size: 10px; color: var(--nh-mute-2); }
 .rowBtn:disabled { cursor: default; opacity: 0.55; }
 .trash { font-size: 12px; color: var(--nh-mute-2); }
 .foot { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-top: 12px; padding: 9px 2px 0; border-top: 1px solid var(--nh-dark-line); }

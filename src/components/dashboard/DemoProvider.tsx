@@ -125,7 +125,7 @@ export function DemoProvider({ tenant, seed, children }: Props) {
         const el = document.getElementById("nh-search");
         if (el && e.target === el) return; // the box clears its text first, closes on the second press
         el?.blur();
-        setPop(null); setQ(""); setMenu(false); setSheet(null);
+        setPop(null); setQ(""); setMenu(false); setSheet(null); setDev(false);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -195,7 +195,8 @@ export function DemoProvider({ tenant, seed, children }: Props) {
   }), [emit, S.ideas, actor, slug]);
 
   const href = useCallback((path: string) => "/" + slug + path, [slug]);
-  const closeAll = useCallback(() => { setPop(null); setQ(""); setDev(false); setMenu(false); }, []);
+  // Close the popovers and the mobile menu; the dev panel stays open so settings can be changed in a row.
+  const closeAll = useCallback(() => { setPop(null); setQ(""); setMenu(false); }, []);
 
   const setRole = useCallback((r: Role) => {
     const rp = seed.personas.find((x) => x.id === r);
@@ -218,7 +219,7 @@ export function DemoProvider({ tenant, seed, children }: Props) {
   const resetDemo = useCallback(() => {
     resetLog(slug);
     setPrefs(slug, { leadAs: null });
-    setQ(""); setPop(null); setDev(false); setSheet(null);
+    setQ(""); setPop(null); setSheet(null);
     showToast("Demo state reset");
   }, [slug, showToast]);
 
@@ -252,7 +253,7 @@ export function DemoProvider({ tenant, seed, children }: Props) {
   const value: DemoContext = {
     tenant, seed, ready, S, D, N, log,
     role, setRole, leadAs, setLeadAs, persona, actor, email,
-    demo, toggleDemo: () => { setPrefs(slug, { demo: !demo }); setDev(false); },
+    demo, toggleDemo: () => setPrefs(slug, { demo: !demo }),
     dept, setDept: (id) => { setPrefs(slug, { dept: id }); setMenu(false); }, matches: (depts) => dept === "All" || depts.includes(dept), deptName,
     q, setQ, pop, setPop, togglePop: (p) => setPop((cur) => (cur === p ? null : p)),
     sheet, openSheet: (kind, id, init) => { setSheet({ kind, id, text: "", picked: null, people: [], ...init }); setPop(null); },
