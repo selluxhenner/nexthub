@@ -23,6 +23,13 @@
   --nh-brand-line: #b8d9ff;
   --nh-brand-2: var(--nh-brand-hover); /* compatibility alias for existing components */
   --nh-ok: #2f8f5b;
+  /* The two kinds of thing an employee raises. Tint the surface, never the action button. */
+  --nh-problem: #c2410c;      /* terracotta: something hurts */
+  --nh-problem-tint: #fff1ea;
+  --nh-problem-line: #f5c4a8;
+  --nh-idea: #6d4fc2;         /* violet: something could be */
+  --nh-idea-tint: #f2eefb;
+  --nh-idea-line: #cfc2f0;
 
   --nh-font: var(--font-sans, "Manrope"), system-ui, -apple-system, "Segoe UI", sans-serif;   /* --font-sans set by next/font in layout.tsx */
   --nh-mono: var(--font-mono, "IBM Plex Mono"), ui-monospace, SFMono-Regular, Menlo, monospace;

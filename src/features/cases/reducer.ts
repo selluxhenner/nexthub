@@ -6,7 +6,7 @@
 //
 // Time: `log.day` is the demo clock, 0 = today. Seed cases carry `raisedDay` as a negative
 // offset; age = day - raisedDay. A paused clock (question sent) does not count towards the promise.
-import type { CaseEvent, EventLog } from "./events";
+import type { CaseEvent, CaseKind, EventLog } from "./events";
 import type { Idea, Problem, Route, SeedCase } from "@/features/demo/types";
 
 export type Decision = { answer: "yes" | "no"; reason: string; note: string; by: string; day: number };
@@ -22,7 +22,7 @@ export type Escalation = { to: string; from: string; day: number; live: boolean 
 export type CaseStatus = "open" | "decided" | "asked" | "building" | "shipped";
 
 export type ReducedCase = {
-  id: string; seed: boolean; title: string; body: string; from: string; fromDept: string;
+  id: string; seed: boolean; kind: CaseKind; title: string; body: string; from: string; fromDept: string;
   routeId: string | null; assignee: string; raisedDay: number; reason: string; upside: string; linkedIdea: string | null;
   status: CaseStatus; read: number | null; decided: Decision | null; question: Question | null; handed: HandOver[];
   building: Building | null; shipped: Shipped | null; override: Override | null;
@@ -42,7 +42,7 @@ export type State = { day: number; cases: ReducedCase[]; ideas: ReducedIdea[]; p
 
 export type ReduceSeed = { cases: SeedCase[]; ideas: Idea[]; problems: Problem[]; routes: Route[]; promiseDays: number };
 
-type CaseRow = { title: string; body?: string; from: string; fromDept?: string; routeId?: string | null; assignee: string; raisedDay?: number; reason?: string; upside?: string; linkedIdea?: string };
+type CaseRow = { kind?: CaseKind; title: string; body?: string; from: string; fromDept?: string; routeId?: string | null; assignee: string; raisedDay?: number; reason?: string; upside?: string; linkedIdea?: string };
 
 export function reduce(seed: ReduceSeed, log: EventLog): State {
   const day = log.day | 0;
@@ -56,7 +56,7 @@ export function reduce(seed: ReduceSeed, log: EventLog): State {
 
   const freshCase = (id: string, row: CaseRow, isSeed: boolean): ReducedCase => {
     const c: ReducedCase = {
-      id, seed: isSeed, title: row.title, body: row.body ?? "", from: row.from, fromDept: row.fromDept ?? "",
+      id, seed: isSeed, kind: row.kind ?? "problem", title: row.title, body: row.body ?? "", from: row.from, fromDept: row.fromDept ?? "",
       routeId: row.routeId ?? null, assignee: row.assignee, raisedDay: row.raisedDay ?? 0,
       reason: row.reason ?? "", upside: row.upside ?? "", linkedIdea: row.linkedIdea ?? null,
       status: "open", read: null, decided: null, question: null, handed: [], building: null, shipped: null,
@@ -90,7 +90,7 @@ export function reduce(seed: ReduceSeed, log: EventLog): State {
     const target = ev.target ?? "";
     switch (ev.type) {
       case "case.raised": {
-        const c = freshCase(target, { title: pl.title ?? "Untitled", body: pl.body, from: ev.actor, fromDept: pl.fromDept, routeId: pl.routeId, assignee: pl.assignee ?? "Triage desk", raisedDay: d, reason: pl.reason ?? "triage", upside: pl.upside ?? "" }, false);
+        const c = freshCase(target, { kind: pl.kind, title: pl.title ?? "Untitled", body: pl.body, from: ev.actor, fromDept: pl.fromDept, routeId: pl.routeId, assignee: pl.assignee ?? "Triage desk", raisedDay: d, reason: pl.reason ?? "triage", upside: pl.upside ?? "" }, false);
         c.history.push(ev);
         break;
       }

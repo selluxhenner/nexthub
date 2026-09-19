@@ -6,7 +6,7 @@ export type Role = (typeof ROLES)[number];
 export const ROLE_HOME: Record<Role, string> = {
   manager: "/manager", // Overview
   leader: "/leader", // Inbox
-  member: "/team", // My cases
+  member: "/raise", // Raise a problem or an idea
 };
 
 // Who may open what. Path prefixes relative to /[company]. Anything not listed = any signed-in role.

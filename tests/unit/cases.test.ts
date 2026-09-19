@@ -44,6 +44,13 @@ describe("reduce", () => {
     expect(mineFor(S, "Anonymous #4471").length).toBe(4);
     expect(c.age).toBe(0);
     expect(c.overdue).toBe(false);
+    expect(c.kind, "kind missing on the event = problem").toBe("problem");
+  });
+
+  it("case.raised keeps the kind: an idea stays an idea, seed cases are problems", () => {
+    const S = reduce(SEED, logOf(ev("case.raised", "Anonymous #4471", "c_idea", { kind: "idea", title: "Shared fixture library", routeId: null, assignee: "T. Vogel", fromDept: "Production, Line 3" })));
+    expect(find(S.cases, "c_idea").kind).toBe("idea");
+    expect(S.cases.filter((c) => c.seed).every((c) => c.kind === "problem")).toBe(true);
   });
 
   it("case.decided closes the case; clock stops; cleared list credits the actor", () => {

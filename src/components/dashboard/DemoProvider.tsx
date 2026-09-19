@@ -68,10 +68,10 @@ export function useDemo(): DemoContext {
   return c;
 }
 
-// First visit: the URL says which role the visitor meant (/leader -> leader, /team -> member).
+// First visit: the URL says which role the visitor meant (/leader -> leader, /raise or /team -> member).
 function roleFromPath(path: string): Role {
   if (path === "/leader" || path.startsWith("/leader/")) return "leader";
-  if (path === "/team" || path.startsWith("/team/")) return "member";
+  if (path === "/raise" || path === "/team" || path.startsWith("/team/")) return "member";
   return "manager";
 }
 
@@ -91,7 +91,9 @@ export function DemoProvider({ tenant, seed, children }: Props) {
   const persisted = useSyncExternalStore(subscribe, () => getSnapshot(slug), getServerSnapshot);
   const ready = persisted.loaded;
   const log = persisted.log;
-  const role: Role = persisted.prefs.role ?? roleFromPath(appPath);
+  // The guess is made once per page load, so following a link (/raise -> /cases/x) keeps the persona.
+  const [guessedRole] = useState(() => roleFromPath(appPath));
+  const role: Role = persisted.prefs.role ?? guessedRole;
   const leadAs = persisted.prefs.leadAs ?? null;
   const demo = persisted.prefs.demo ?? true;
   const dept = persisted.prefs.dept ?? "PRD";

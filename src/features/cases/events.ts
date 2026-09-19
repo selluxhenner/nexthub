@@ -2,7 +2,7 @@
 // Port of legacy/demo/js/store.js - types here, reducer in reducer.ts, selectors in selectors.ts.
 // Never store display text as state: store who / which day / which route; build sentences at render.
 export type CaseEventType =
-  | "case.raised" // { title, body, routeId, assignee, fromDept, reason?, upside? }
+  | "case.raised" // { title, body, routeId, assignee, fromDept, kind?, reason?, upside? }
   | "case.read" // -
   | "case.decided" // { answer: 'yes'|'no', reason?, note? }
   | "case.handed" // { to, why? }
@@ -18,9 +18,12 @@ export type CaseEventType =
   | "idea.funded" // { team?: [names], note? }
   | "day.advanced"; // { by }
 
+// What an employee raises: something that hurts, or something that could be. Missing = problem.
+export type CaseKind = "problem" | "idea";
+
 // Every field an event may carry. Which ones apply is documented per type above.
 export type EventPayload = {
-  title?: string; body?: string; routeId?: string | null; assignee?: string; fromDept?: string; reason?: string; upside?: string;
+  title?: string; body?: string; routeId?: string | null; assignee?: string; fromDept?: string; kind?: CaseKind; reason?: string; upside?: string;
   answer?: "yes" | "no"; note?: string;
   to?: string; why?: string;
   text?: string;
