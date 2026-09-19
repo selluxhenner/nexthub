@@ -2,7 +2,7 @@
 // Port of legacy/demo/js/store.js - types here, reducer in reducer.ts, selectors in selectors.ts.
 // Never store display text as state: store who / which day / which route; build sentences at render.
 export type CaseEventType =
-  | "case.raised" // { title, body, routeId, assignee, fromDept, kind?, reason?, upside? }
+  | "case.raised" // { title, body, routeId, assignee, fromDept, kind?, reason?, upside?, affected?, attachments? }
   | "case.read" // -
   | "case.decided" // { answer: 'yes'|'no', reason?, note? }
   | "case.handed" // { to, why? }
@@ -11,6 +11,9 @@ export type CaseEventType =
   | "case.building" // { days, expected? }            (seed history)
   | "case.shipped" // { outcome, outcomeNote }        (seed history)
   | "case.override" // { proposed, chosen }  (route ids)
+  | "case.affected" // -   the actor says the problem hits them too (read from the log by selectors; the reducer ignores it)
+  | "case.unaffected" // - withdraws that
+  | "case.commented" // { text }
   | "idea.cosigned" // -
   | "idea.uncosigned" // -
   | "idea.asked" // { text }
@@ -31,6 +34,8 @@ export type EventPayload = {
   outcome?: string; outcomeNote?: string;
   proposed?: string | null; chosen?: string;
   team?: string[];
+  affected?: string[]; // names the raiser says are hit by the problem too
+  attachments?: number; // screenshots attached when raised (the files stay in the browser; only the count is a fact)
   by?: number;
 };
 

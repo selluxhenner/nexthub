@@ -33,8 +33,11 @@ export function Bars({ spark, tone, size, flat }: { spark: readonly number[]; to
   );
 }
 
-export function Avatar({ name, size, tone }: { name: string; size?: "sm" | "lg"; tone?: "light" }) {
-  return <span className={ui.avatar} data-size={size} data-tone={tone}>{ini(name)}</span>;
+// One of eight hues, stable per name, so the same person is the same colour on every page.
+export const hueOf = (name: string) => [...name].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 8, 7);
+
+export function Avatar({ name, size, tone }: { name: string; size?: "sm" | "lg"; tone?: "light" | "color" }) {
+  return <span className={ui.avatar} data-size={size} data-tone={tone} data-hue={tone === "color" ? hueOf(name) : undefined} title={name}>{ini(name)}</span>;
 }
 
 export function Quote({ text, by, tone }: { text: string; by: string; tone?: "accent" }) {

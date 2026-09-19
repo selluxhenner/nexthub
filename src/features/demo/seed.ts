@@ -247,12 +247,12 @@ export const CASES: SeedCase[] = [
   { id: 'c5', title: 'Two apprentices still have no MES login after four weeks', from: 'P. Mayer', fromDept: 'Production, Line 1',
     routeId: 'r4', assignee: 'T. Vogel', raisedDay: -1, reason: 'wrong department', upside: '2 people idle on paperwork',
     body: 'Started 18 August. Tickets raised per system. They shadow others because they cannot book their own work.' },
-  { id: 'c6', title: 'Can Line 3 borrow the endurance rig on Fridays?', from: 'Anonymous #0931', fromDept: 'Production, Line 3',
+  { id: 'c6', kind: 'idea', title: 'Can Line 3 borrow the endurance rig on Fridays?', from: 'Anonymous #0931', fromDept: 'Production, Line 3',
     routeId: 'r2', assignee: 'T. Vogel', raisedDay: -1, reason: 'is it important', upside: 'unblocks the belt-tension trial',
     body: 'We have a two-day trial ready since June. The rig is booked six weeks out by series validation.' },
 
   // ── the employee persona's history (Anonymous #4471) — answered, built, shipped ──
-  { id: 'c7', title: 'Bundle new-hire access into one request', from: 'Anonymous #4471', fromDept: 'Production, Line 3',
+  { id: 'c7', kind: 'idea', title: 'Bundle new-hire access into one request', from: 'Anonymous #4471', fromDept: 'Production, Line 3',
     routeId: 'r4', assignee: 'L. Brandt', raisedDay: -184, reason: 'wrong department', upside: '5 weeks of paid waiting per hire', linkedIdea: 'i8',
     body: 'Eight sequential tickets after the start date. My first two weeks were reading PDFs because I had no login.',
     seedEvents: [
@@ -261,7 +261,7 @@ export const CASES: SeedCase[] = [
       { type: 'case.building', day: -178, actor: 'L. Brandt', payload: { days: 21, expected: '5 weeks → 11 days' } },
       { type: 'case.shipped', day: -74, actor: 'L. Brandt', payload: { outcome: '5 weeks → 11 days', outcomeNote: 'measured across 9 new hires' } }
     ] },
-  { id: 'c8', title: 'Stop double-entering job data on paper', from: 'Anonymous #4471', fromDept: 'Production, Line 3',
+  { id: 'c8', kind: 'idea', title: 'Stop double-entering job data on paper', from: 'Anonymous #4471', fromDept: 'Production, Line 3',
     routeId: 'r8', assignee: 'D. Ferraro', raisedDay: -104, reason: 'no time', upside: '≈ 3 h / week / technician',
     body: 'Technicians enter the same job data twice, once on paper and once at the hotel.',
     seedEvents: [

@@ -6,15 +6,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navFor } from "@/config/nav";
+import { SHELL } from "@/config/roles";
 import { SITE } from "@/config/site";
 import { useDemo } from "@/components/dashboard/DemoProvider";
 import { mineRows, openCases } from "@/components/dashboard/derive";
 import { DevPanel } from "./DevPanel";
 import { InputSheet } from "./InputSheet";
+import { SimpleShell } from "./SimpleShell";
 import { TopBar } from "./TopBar";
 import styles from "./AppShell.module.css";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const ctx = useDemo();
+  if (SHELL[ctx.role] === "simple") return <SimpleShell>{children}</SimpleShell>;
+  return <RailShell>{children}</RailShell>;
+}
+
+// The full chrome: rail (nav by role) + top bar. Leaders and managers.
+function RailShell({ children }: { children: React.ReactNode }) {
   const ctx = useDemo();
   const { tenant, role, persona, N, menu, setMenu, pop, setPop, sheet, toast } = ctx;
   const pathname = usePathname();
