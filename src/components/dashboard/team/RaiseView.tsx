@@ -50,8 +50,8 @@ export function RaiseView() {
   }, [phase, act]);
 
   // Object URLs are browser memory: release whatever is still previewed when the page goes.
-  const shotsRef = useRef(shots);
-  shotsRef.current = shots;
+  const shotsRef = useRef<Shot[]>([]);
+  useEffect(() => { shotsRef.current = shots; }, [shots]);
   useEffect(() => () => shotsRef.current.forEach((s) => URL.revokeObjectURL(s.url)), []);
 
   if (!ready) return <div className={styles.loading} />;

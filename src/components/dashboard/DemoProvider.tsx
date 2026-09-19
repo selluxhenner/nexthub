@@ -179,16 +179,20 @@ export function DemoProvider({ tenant, seed, children }: Props) {
       return !already;
     },
     affect: (caseId) => {
-      const already = affectedOn(log, caseId).some((a) => a.name === actor);
-      emit(already ? "case.unaffected" : "case.affected", caseId);
-      return !already;
+      // Decided against the log as it is at that moment, so a double click toggles cleanly.
+      let added = true;
+      updateLog(slug, (prev) => {
+        added = !affectedOn(prev, caseId).some((a) => a.name === actor);
+        return appendEvent(prev, { type: added ? "case.affected" : "case.unaffected", actor, target: caseId });
+      });
+      return added;
     },
     comment: (caseId, text) => emit("case.commented", caseId, { text }),
     askIdea: (ideaId, text) => emit("idea.asked", ideaId, { text }),
     approve: (ideaId, team, note) => emit("idea.approved", ideaId, { team, note }),
     fund: (ideaId, team, note) => emit("idea.funded", ideaId, { team, note }),
     advanceDay: (by) => emit("day.advanced", null, { by: by ?? 1 }),
-  }), [emit, S.ideas, actor]);
+  }), [emit, S.ideas, actor, slug]);
 
   const href = useCallback((path: string) => "/" + slug + path, [slug]);
   const closeAll = useCallback(() => { setPop(null); setQ(""); setDev(false); setMenu(false); }, []);
