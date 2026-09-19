@@ -36,6 +36,7 @@
 .mePreviewLabel { font-family: var(--nh-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--nh-mute); margin-bottom: 3px; }
 .mePreviewName { font-size: 13px; font-weight: 700; color: var(--nh-ink); }
 .meFoot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--nh-line-soft); }
+.meFoot[data-single="true"] { justify-content: flex-end; }
 .meLink { font-size: 12px; font-weight: 600; color: var(--nh-brand); }
 .logout { font-size: 12px; font-weight: 600; color: var(--nh-mute); background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
 .logout:hover { color: var(--nh-ink); }
@@ -43,7 +44,7 @@
 .content { flex: 1; padding: 20px var(--nh-page-x) 40px; }
 .contentInner { max-width: var(--nh-max); margin: 0 auto; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
 
-.backdrop { position: fixed; inset: 0; z-index: 30; }
+.backdrop { position: fixed; inset: 0; z-index: 10; } /* below .bar (z 20): the sticky bar is its own stacking context, so a higher backdrop would cover the popover */
 .toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 80; max-width: min(92vw, 560px); padding: 11px 16px; border-radius: 12px; background: var(--nh-dark); color: var(--nh-on-dark); font-size: 13px; line-height: 1.45; box-shadow: 0 14px 40px rgba(20, 20, 20, 0.25); }
 
 @media (max-width: 760px) {
