@@ -1,5 +1,5 @@
 "use client";
-// Page head every view shares: title, sub-line, the scope chip, and (problems / ideas) the
+// Page head every view shares: title, sub-line, and (problems / ideas) the
 // sort + filter menus with an active-filter strip underneath. Port of the "page head" and
 // "list tools" blocks in legacy/demo/index.html.
 import { useDemo } from "@/components/dashboard/DemoProvider";
@@ -7,7 +7,7 @@ import { fmt } from "@/lib/utils/format";
 import styles from "./ViewHead.module.css";
 
 export function ViewHead({ view, tools, strip }: { view: string; tools?: React.ReactNode; strip?: React.ReactNode }) {
-  const { seed, demo, dept, setDept, deptName } = useDemo();
+  const { seed, demo } = useDemo();
   const copy = seed.views[view] ?? seed.views.overview;
   return (
     <>
@@ -16,12 +16,7 @@ export function ViewHead({ view, tools, strip }: { view: string; tools?: React.R
           <h1 className={styles.title}>{copy.title}</h1>
           {copy.sub && <div className={styles.sub}>{copy.sub.replace("{signals}", demo ? fmt(seed.metrics.signals) : "0")}</div>}
         </div>
-        <div className={styles.tools}>
-          {dept !== "All" && (
-            <button type="button" className={styles.scopeChip} onClick={() => setDept("All")}>{deptName(dept)}<span className={styles.scopeX}>×</span></button>
-          )}
-          {tools}
-        </div>
+        <div className={styles.tools}>{tools}</div>
       </div>
       {strip}
     </>
