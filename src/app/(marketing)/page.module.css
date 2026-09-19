@@ -13,7 +13,7 @@
 .product { max-width: 1200px; margin: clamp(56px, 8vw, 96px) auto 0; padding: 0 var(--nh-page-x); display: grid; gap: 18px; }
 .product img, .stepShot img { display: block; width: 100%; height: auto; }
 .product img { border-radius: var(--nh-r-xl); box-shadow: var(--nh-card-shadow), 0 40px 80px -40px rgb(20 20 20 / 0.25); }
-.product figcaption { font-size: 14px; color: var(--nh-mute); max-width: 60ch; margin: 0 auto; text-align: center; line-height: 1.5; display: grid; gap: 6px; justify-items: center; }
+.product figcaption { font-size: 14px; color: var(--nh-mute); max-width: 60ch; margin: 0 auto; text-align: center; line-height: 1.5; }
 
 /* The clock: the problem in two bars, no box. */
 .clock {
@@ -38,9 +38,6 @@
 .stepWho { font-family: var(--nh-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--nh-mute); }
 .stepText h3 { font-size: clamp(24px, 3vw, 34px); letter-spacing: -0.025em; }
 .stepText p { color: var(--nh-ink-2); font-size: 16px; line-height: 1.55; max-width: 52ch; }
-/* The why: one sentence of reasoning, set apart by a thin blue rule so it reads as the reason, not more copy. */
-.stepWhy { display: grid; gap: 4px; justify-items: center; font-size: 14.5px; color: var(--nh-ink-2); max-width: 52ch; padding-top: 12px; margin-top: 2px; border-top: 2px solid var(--nh-brand-line); }
-.stepWhy :global(.nh-eyebrow) { color: var(--nh-brand); }
 .stepShot { width: 100%; border-radius: var(--nh-r-xl); overflow: hidden; box-shadow: var(--nh-card-shadow), 0 30px 60px -36px rgb(20 20 20 / 0.22); }
 .stepShot[data-tight="true"] { max-width: 880px; }
 
